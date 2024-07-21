@@ -68,7 +68,6 @@ export default{
         <table >
           <thead>
             <tr>
-              
               <th class="checkBoxTop">&nbsp&nbsp&nbsp&nbsp</th>
               <th >編號</th>
               <th>名稱</th>

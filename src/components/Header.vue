@@ -17,9 +17,12 @@ export default {
 <style scoped lang="scss">
 *{
     box-sizing: border-box;
+    border: 1px solid rgb(18, 80, 92);
 }
+
     .header{
+        background-color: rgb(212, 247, 253);
         width: 100vw;
-        height: 15vh
+        height: 15vh;
     }
 </style>

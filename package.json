@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "flatpickr": "^4.6.13",
     "pinia": "^2.1.7",
     "sass": "^1.77.8",
     "vue": "^3.4.29",
+    "vue-flatpickr-component": "^11.0.5",
     "vue-router": "^4.3.3"
   },
   "devDependencies": {
