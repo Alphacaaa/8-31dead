@@ -26,13 +26,20 @@ export default{
                 <input type="text">
             </div>
         </div>
+        <div class="buttonBox">
+            <RouterLink to="/SetContent"><button type="button" ><b>>>下一步</b></button></RouterLink>
+        </div>
+
     </div>
 </template>
 
 <style scoped lang="scss">
+*{
+    box-sizing: border-box;
+}
 .Frame{
-    width: 90vw;
-    height: 90vh;
+    width: 84vw;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -42,7 +49,7 @@ export default{
         justify-content: center;
         align-items: center;
         width: 70%;
-        height: 60%;
+        height: 100%;
         .inputContainer{
             display: flex;
             flex-wrap: wrap;
@@ -78,5 +85,6 @@ export default{
         }
         
     }
+
 }
 </style>

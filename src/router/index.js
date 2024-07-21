@@ -21,6 +21,12 @@ const router = createRouter({
       path: '/QuestionaireSet',
       name: 'QuestionaireSet',
       component: () => import('../views/QuestionaireSet.vue')
+    },
+    {
+      path:'/SetContent',
+      name:'SetContet',
+      component:() => import('../views/SetContent.vue')
+      
     }
   ]
 })

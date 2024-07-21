@@ -9,8 +9,11 @@
 </template>
 
 <style scoped lang="scss">
+*{
+    box-sizing: border-box;
+}
 .breadList{
-    height: 50px;
-    width: 5vw;
+    height: 85dvh;
+    width:15dvw;
 }
 </style>

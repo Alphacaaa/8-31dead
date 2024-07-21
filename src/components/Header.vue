@@ -15,8 +15,11 @@ export default {
 </template>
 
 <style scoped lang="scss">
+*{
+    box-sizing: border-box;
+}
     .header{
         width: 100vw;
-        height: 100px;
+        height: 15vh
     }
 </style>
