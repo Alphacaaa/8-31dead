@@ -1,6 +1,6 @@
 <script>
 import { RouterLink } from 'vue-router'
-import QuestionaireSetFirst from '../components/QuestionaireSetFirst.vue'
+import QuestionaireSetFirst from '../components/HomePageList.vue'
 import breadCrum from '../components/breadCrum.vue'
 import Header from '../components/Header.vue'
 import flatPickr from 'vue-flatpickr-component';
@@ -34,9 +34,6 @@ export default {
 <div class="Main">
     <breadCrum />
     <div class="workSpace">
-        <div class="step">
-
-        </div>
         <div class="Frame">
             <div class="dataWindow">
                 <div class="inputContainer">
@@ -61,7 +58,7 @@ export default {
             </div>
         </div>
         <div class="buttonBox">
-            <RouterLink class="routerButton"to="/SetContent"><button type="button" ><b>下一步</b></button></RouterLink>
+            <RouterLink class="routerButton"to="/SetContent">下一步</RouterLink>
             <i class="fa-solid fa-angles-right"></i>
         </div>
 
@@ -82,8 +79,9 @@ export default {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-size: 24px;
-    background-color: rgb(212, 247, 253);
+    // font-size: 24px;
+    background-color: rgb(221, 249, 253);
+    // background-color: #649ABC;
     // display: flex;
     // flex-wrap: wrap;
 }
@@ -98,33 +96,35 @@ export default {
     .workSpace{
         width: 84vw;
         height: 90%;
-        .step{
-            width:100%;
-            height: 20%;
-        }
         .Frame{
-            width: 84vw;
-            height: 80%;
+            // margin: auto;
+            width: 100%;
+            height: 90%;
             display: flex;
             justify-content: center;
             align-items: center;
+            // background-color: #649ABC;
+            // border:1px solid black;
             .dataWindow{
                 display: flex;
                 // flex-wrap: wrap;
                 justify-content: center;
                 align-items: center;
-                width: 70%;
+                margin: auto;
+                width: 90%;
                 height: 100%;
+                
                 .inputContainer{
                     display: flex;
                     flex-wrap: wrap;
                     justify-content: center;
                     align-items: center;
-                    width: 80%;
-                    height: 80%;
+                    width: 100%;
+                    height: 100%;
+                    
                     label{
                         height: 5%;
-                        width: 15%;
+                        width: 10%;
                         font-size: 24px;
                         text-align: center;
                         display: flex;
@@ -133,22 +133,24 @@ export default {
                     }
                     .introLabel{
                         height: 50%;
+                        width: 10%;
                         align-items:start;
                         }
                     input{
-                        width: 85%;
+                        width:90%;
                         height: 5%;
                         outline: none;
-                        border-right: none;
-                        border-left: none;
-                        border-top: none;
+                        // border-right: none;
+                        // border-left: none;
+                        // border-top: none;
 
-                        border-bottom: 4px solid rgb(18, 80, 92);
+                        // border-bottom: 2px solid rgb(18, 80, 92);
+                        border: 2px solid rgb(18, 80, 92);
                         // font-size: 24px;
                         }
                     textarea{
                         height: 50%;
-                        width: 85%;
+                        width: 90%;
                         font-size: 24px;
                         padding: 2px;
                     }
@@ -159,9 +161,9 @@ export default {
                             font-size: 18px;
                         }
                         input{
-                            width: 15%;
+                            width: 10%;
                             background-color: rgb(168, 209, 218);
-                            border-bottom: none;
+                            border: none;
                         }
                     }
                 }
@@ -169,13 +171,23 @@ export default {
         }
         .buttonBox{
             height: 10%;
-            width: 100%;
+            width:100%;
+            // margin: auto;
             display: flex;
             justify-content: end;
             align-items: center;
             padding-right: 300px;
-            button{
-                color: rgb(18, 80, 92);
+            .routerButton{
+                color: rgb(255, 255, 255);
+                background-color:#216792;
+                // display: flex;  
+                // width: 100px;
+                // height: 60px;
+                // text-align: center;
+                text-decoration: none;
+                border-radius: 10px;
+                // border: none;
+                font-size: 24px;
             }
             .fa-angles-right{
                 font-size: 28px;

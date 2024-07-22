@@ -1,70 +1,78 @@
-
 <script>
-import { RouterLink } from 'vue-router'
+import CreateQButton from '../components/CreateQButton.vue'
 import Header from '../components/Header.vue'
+import breadCrum from '../components/breadCrum.vue'
+import listPage from '../components/HomePageList.vue'
+import flatPickr from 'vue-flatpickr-component';
+import 'flatpickr/dist/flatpickr.css';
 export default{
-  data(){
-    return{
+  data() {
+    return {
       users: [
-        { id: 1, name: '', age:  '',path:'前往'},
-        { id: 2, name: '', age:  '',path:'前往'},
-        { id: 3, name: '', age:  '',path:'前往'},
-        { id: 4, name: '', age:  '',path:'前往'},
-        { id: 5, name: '', age:  '',path:'前往'},
-        { id: 6, name: '', age:  '',path:'前往'},
-        { id: 7, name: '', age:  '',path:'前往'},
-        { id: 8, name: '', age:  '',path:'前往'},
-        { id: 9, name: '', age:  '',path:'前往'},
-        { id: 10, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 1, name: '', age:  '',path:'前往',icon:'../public/HomeIcon.svg'},
+        { id: 2, name: '', age:  '',path:'前往',icon:'../public/HomeIcon.svg'},
+        { id: 3, name: '', age:  '',path:'前往',icon:'../public/HomeIcon.svg'},
+        { id: 4, name: '', age:  '',path:'前往',icon:'../public/HomeIcon.svg'},
+        { id: 5, name: '', age:  '',path:'前往',icon:'../public/HomeIcon.svg'},
+        // { id: 6, name: '', age:  '',path:'前往'},
+        // { id: 7, name: '', age:  '',path:'前往'},
+        // { id: 8, name: '', age:  '',path:'前往'},
+        // { id: 9, name: '', age:  '',path:'前往'},
+        // { id: 10, name: '', age:  '',path:'前往'},
+        // { id: 11, name: '', age:  '',path:'前往'},
       ],
-      itemsPerPage : 10,
-      currentPage:1
-    }
+      selectedDate: null,
+      flatpickrOptions: {
+        dateFormat: 'Y-m-d', // 設置日期格式
+        minDate:'today'
+      }
+    };
   },
-  mounted(){
-  },
-  methods:{
-    // pageChange(){
-    //   this.currentPage = pageNumber
-    //   console.log(user.id)
 
-    // }
-  },
-  computed:{
-    // totalPages:function(){
-    //   return this.user.length / 10
-    // }
-  },
   components:{
-    Header,
-    RouterLink
+      CreateQButton,
+      Header,
+      flatPickr,
+      breadCrum,
+      listPage
   }
 }
 </script>
 
 <template>
+  <Header  />
   
-<Header />
-<div class="FatherBox">
-    <div class="topContainer">
-      <div class="search">
-          <label for="">問卷名稱:</label>
-          <input type="text">
+  
+  <div class="FatherBox">
+    <breadCrum />
+    <div class="bigBox">
+      <!-- <div class="topContainer">
+      <div class="searchAndTimeBox">
+        <div class="search">
+          <input type="text" placeholder="搜尋問卷">
+        </div>
+        <div class="statTime">
+          <div class="timeBox">
+            <flat-pickr class="timePicker" v-model="selectedStartDate" :config="flatpickrOptions"></flat-pickr>
+          </div>
+          <span>&nbsp~&nbsp</span>
+          <div class="timeBox">
+            <flat-pickr  class="timePicker" v-model="selectedEndDate" :config="flatpickrOptions"></flat-pickr>
+          </div>
+        </div>
+        <button type="button"><i class="fa-solid fa-magnifying-glass"></i>&nbsp搜尋</button>
       </div>
-      <div class="statTime">
-          <label for="">統計時間:</label>
-          <input class="startTime" type="text">
-          <span>到</span>
-          <input class="endTime" type="text">
-      </div>
-      <button type="button">搜尋</button>
-    </div>
+    </div> -->
     <div class="iconContainer">
-      <i class="fa-solid fa-trash-can"></i>
-      <RouterLink to="/QuestionaireSet"><i class="fa-solid fa-plus"></i></RouterLink>
+      <span><b>我的問卷</b></span>
+      <div class="icon">
+        <i class="fa-solid fa-trash-can"></i>
+      <!-- <RouterLink to="/QuestionaireSet"><i class="fa-solid fa-plus"></i></RouterLink> -->
+      </div>
+      
     </div>
-    <div class="list">
+    <listPage />
+    <!-- <div class="list">
         <table >
           <thead>
             <tr>
@@ -74,155 +82,212 @@ export default{
               <th>狀態</th>
               <th>開始時間</th>
               <th>結束時間</th>
-              <th>結果</th>
+              <th class="result"></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(user,index) in users" :key=user.id>
               <td class="checkBox"><input type="checkbox"></td>
               <td class="idBox">{{ user.id }}</td>
-              <td>{{ user.name }}</td>
+              <td class="name">{{ user.name }}</td>
               <td>{{ user.age }}</td>
               <td></td>
               <td></td>
               <td class="pathBox">{{user.path}}</td>
-              <!-- <td>
-                <button @click="edit()">編輯</button>
-                <button @click="edit()">刪除</button>
-              </td> -->
+
             </tr>
           </tbody>
         </table>
-        <!-- <div class="pageChage">
-          <button v-for="pageNumber in totalPages" @click="pageChange()"> 
-            {{ pageNumber }}
-          </button>
-        </div> -->
 
 
+
+    </div> -->
     </div>
+
 </div>
+  <!-- <div class="buttonContainer">
+    <CreateQButton />
+  </div> -->
+  
 </template>
 
 <style scoped lang="scss">
 *{
-  border: 1px solid black;
+  // border: 1px solid black;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  // font-family: "LXGW WenKai Mono TC", monospace;
+  // font-family: "Chocolate Classical Sans", sans-serif;
 }
 .FatherBox{
   width: 100vw;
-  height: 100vh;
-  .topContainer{
-    position: relative;
-    width: 100dvw;
-    height: 22%;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap ;
-    .search{
+  height: 85vh;
+  background-color: rgb(212, 247, 253);
+  display: flex;
+  flex-wrap: wrap;
+  .bigBox{
+    width: 85vw;
+    height: 85vh;
+    .topContainer{
+      position: relative;
+      width: 84vw;
+      height: 22%;
+      // margin: auto;
+      display: flex;
+      align-items: center;
+      // justify-content: center;
+      flex-wrap: wrap ;
+    .searchAndTimeBox{
       margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content:start;
       width: 80%;
-      height: 20%;
+      height: 50%;
+      .search{
+      // margin: auto;
+        width: 50%;
+        height: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      // label{
+      //   font-size: 24px;
+      //   margin-right: 20px;
+      // }
+      input{
+        width: 100%;
+        height: 80%;
+        font-size: 24px;
+        background-color: rgb(212, 247, 253);
+        border: 4px solid rgb(18, 80, 92);
+        // border-bottom: 4px solid rgb(18, 80, 92);
+        // border-top: none;
+        // border-left: none;
+        // border-right: none;
+        outline: none;
+      }
+      ::placeholder{
+          color: rgb(18, 80, 92);
+        }
+    }
+      .statTime{
+      // margin: auto;
+      width: 30%;
+      height: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      label{
-        font-size: 24px;
-        margin-right: 20px;
-      }
-      input{
-        width: 80%;
-        height: 70%;
-      }
-    }
-    .statTime{
-      // margin: auto;
-      width: 80%;
-      height: 20%;
-      display: flex;
-      align-items: center;
       // justify-content: space-evenly ;
-      label{
+      span{
+        margin: 30px;
+        font-size: 20px;
+      }
+      .timeBox{
+        width: 25%;
+      }
+      .timePicker{
+        width: 100%;
+      }
+    }
+      button{
+        display: block;
+        margin-left: -20px;
+        width: 10%;
+        height: 40%;
         font-size: 24px;
-        margin-right: 20px;
-        margin-left: 75px;
-      }
-      input{
-        width: 30%;
-        height: 70%;
-      }
-      .startTime{
-        margin-right:50px;
-
-      }
-      .endTime{
-        margin-left:50px;
-
+        border-radius: 10px;
+        background-color: rgb(18, 80, 92);
+        color: white;
+        border: none;
+        // &:hover{
+        //   scale:1.1;
+        // }
       }
     }
-    button{
-      position: absolute;
-      bottom: 17%;
-      right: 15%;
-      display: block;
-      height: 40px;
-      width: 80px;
-    }
+    
+
 }
   .iconContainer{
     height: 5%;
     width: 80%;
     margin:1% auto;
-    display: flex;
+    display: flex;  
     align-items: center;
-    justify-content: end;
+    justify-content: space-between;
+    span{
+      font-size: 40px;
+      color: rgb(18, 80, 92);
+      
+    }
     .fa-plus, .fa-trash-can{
       font-size: 40px;
       margin: 20px;
-      color: black;
+      color: rgb(18, 80, 92);
     }
   }
-  .list{
-    width: 100dvw;
-    height: 67%;
-    margin:  auto;
-    table{
-      margin: auto;
-      width: 80%;
-      height: 10%;
-      th{
-        width: 10%;
-        background-color: rgba(92, 88, 84, 1);
-        color: white;
-        text-align: center;
-      }
-      .checkBoxTop{
-        width: 3%;
-      }
-      td{
-        height:50px;
-        font-size: 24px;
-        
-      }
-      .checkBox{
-        width: 3%;
-        // display: flex;
-        // align-items: center;
-        // justify-content: center;
-        text-align: center;
-      }
-      .idBox, .pathBox{
-        text-align: center;
-        &:hover{
-          cursor: pointer;
-      }
+}
+  }
 
-    }
-  }
-}
-}
+//   .list{
+//     width: 84vw;
+//     height: 67%;
+//     // margin:  auto;
+//     table{
+//       margin: auto;
+//       width: 90%;
+//       height: 10%;
+      
+//       th{
+//         // width: 1px;
+//         background-color: rgb(18, 80, 92);
+//         color: white;
+//         text-align: center;
+//         border-right: 2px solid white;
+//         // border-left: 2px solid white;
+//       }
+//       .checkBoxTop{
+//         // width: 1%;
+//         border-top-left-radius: 10px;
+//         border-bottom-left-radius: 10px;
+//       }
+//       .result{
+//         border-top-right-radius: 10px;
+//         border-bottom-right-radius: 10px;
+//         // border-right: 2px solid rgb(18, 80, 92);
+//       }
+//       td{
+//         height:50px;
+//         font-size: 24px;
+//         border: 1px solid rgb(255, 255, 255);
+//         background-color: rgb(220, 241, 245);
+        
+//       }
+//       .name{
+//         width: 50%;
+//       }
+//       .checkBox{
+//         width: 30px;
+//         // display: flex;
+//         // align-items: center;
+//         // justify-content: center;
+//         text-align: center;
+//         input{
+//           width: 50%;
+//           height: 40%;
+//           background-color:rgb(18, 80, 92);
+//         }
+//       }
+//       .idBox, .pathBox{
+//         text-align: center; 
+//         width: 5%;
+//         &:hover{
+//           cursor: pointer;
+//       }
+
+//     }
+//   }
+// }
+
 </style>

@@ -1,6 +1,7 @@
 <script>
 import CreateQButton from '../components/CreateQButton.vue'
 import Header from '../components/Header.vue'
+import list from '../components/HomePageList.vue'
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 export default{
@@ -18,19 +19,40 @@ export default{
         { id: 9, name: '', age:  '',path:'前往'},
         { id: 10, name: '', age:  '',path:'前往'},
         { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
       ],
+      currentPage:1,
+      tablePerPage:10,
       selectedDate: null,
       flatpickrOptions: {
         dateFormat: 'Y-m-d', // 設置日期格式
         minDate:'today'
       }
-    };
+    }
   },
-
+    computed:{
+      currentPageCal(){
+        const start =(this.currentPage - 1) * this.tablePerPage
+        const end = start + this.tablePerPage
+        return this.users.slice(start,end)
+      },
+      totalPages(){
+        return Math.ceil(this.users.length / this.tablePerPage)
+      }
+    },
+    methods:{
+      pushPage(pageNumber){
+        this.currentPage = pageNumber
+      }
+    },
     components:{
         CreateQButton,
         Header,
-        flatPickr
+        flatPickr,
+        list
   }
 }
 </script>
@@ -64,11 +86,12 @@ export default{
       <span><b>所有問卷</b></span>
       <div class="icon">
         <i class="fa-solid fa-trash-can"></i>
-      <RouterLink to="/QuestionaireSet"><i class="fa-solid fa-plus"></i></RouterLink>
+      <!-- <RouterLink to="/QuestionaireSet"><i class="fa-solid fa-plus"></i></RouterLink> -->
       </div>
       
     </div>
-    <div class="list">
+    <list />
+    <!-- <div class="list">
         <table >
           <thead>
             <tr>
@@ -82,29 +105,25 @@ export default{
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(user,index) in users" :key=user.id>
+            <tr v-for="(user,index) in currentPageCal" :key=user.id>
               <td class="checkBox"><input type="checkbox"></td>
               <td class="idBox">{{ user.id }}</td>
-              <td>{{ user.name }}</td>
+              <td class="name">{{ user.name }}</td>
               <td>{{ user.age }}</td>
               <td></td>
               <td></td>
-              <td class="pathBox">{{user.path}}</td>
-              <!-- <td>
-                <button @click="edit()">編輯</button>
-                <button @click="edit()">刪除</button>
-              </td> -->
+              <td class="pathBox">{{user.path}}</td> 
             </tr>
           </tbody>
         </table>
-        <!-- <div class="pageChage">
+        <div class="pageChage">
           <button v-for="pageNumber in totalPages" @click="pageChange()"> 
             {{ pageNumber }}
           </button>
-        </div> -->
+        </div>
 
 
-    </div>
+    </div>  -->
 </div>
   <!-- <div class="buttonContainer">
     <CreateQButton />
@@ -123,12 +142,16 @@ export default{
 }
 .FatherBox{
   width: 100vw;
-  height: 100vh;
-  background-color: rgb(212, 247, 253);
+  height: 85vh;
+  background-color: #FBF6F3;
+  background-color: #ADEBF0;
+  background-color: #E8ECED;
+  background-color: #D6F7F8;
+  // background-color: rgb(212, 247, 253);
   .topContainer{
     position: relative;
     width: 100dvw;
-    height: 22%;
+    height: 10%;
     margin: auto;
     display: flex;
     align-items: center;
@@ -140,7 +163,7 @@ export default{
       align-items: center;
       justify-content:start;
       width: 80%;
-      height: 50%;
+      height: 100%;
       .search{
       // margin: auto;
         width: 50%;
@@ -156,15 +179,17 @@ export default{
         width: 100%;
         height: 80%;
         font-size: 24px;
-        background-color: rgb(212, 247, 253);
-        border-bottom: 4px solid rgb(18, 80, 92);
-        border-top: none;
-        border-left: none;
-        border-right: none;
+        // background-color: rgb(212, 247, 253);
+        border: 4px solid #5D6C89;
+        // border: 4px solid rgb(18, 80, 92);
+        // border-bottom: 4px solid rgb(18, 80, 92);
+        // border-top: none;
+        // border-left: none;
+        // border-right: none;
         outline: none;
       }
       ::placeholder{
-          color: rgb(18, 80, 92);
+          color: #5D6C89;
         }
     }
       .statTime{
@@ -193,8 +218,9 @@ export default{
         height: 40%;
         font-size: 24px;
         border-radius: 10px;
-        background-color: rgb(18, 80, 92);
+        background-color: #5D6C89;
         color: white;
+        border: none;
         // &:hover{
         //   scale:1.1;
         // }
@@ -212,13 +238,13 @@ export default{
     justify-content: space-between;
     span{
       font-size: 40px;
-      color: rgb(18, 80, 92);
+      color: #5D6C89;
       
     }
     .fa-plus, .fa-trash-can{
       font-size: 40px;
       margin: 20px;
-      color: rgb(18, 80, 92);
+      color: #5D6C89;
     }
   }
   .list{
@@ -231,15 +257,16 @@ export default{
       height: 10%;
       
       th{
-        width: 10%;
-        background-color: rgb(18, 80, 92);
+        // width: 1px;
+        background-color: #5D6C89;
+        // background-color: rgb(18, 80, 92);
         color: white;
         text-align: center;
         border-right: 2px solid white;
         // border-left: 2px solid white;
       }
       .checkBoxTop{
-        width: 3%;
+        // width: 1%;
         border-top-left-radius: 10px;
         border-bottom-left-radius: 10px;
       }
@@ -252,23 +279,29 @@ export default{
         height:50px;
         font-size: 24px;
         border: 1px solid rgb(255, 255, 255);
+        // background-color: #FEB06A;
         background-color: rgb(220, 241, 245);
+
         
       }
+      .name{
+        width: 50%;
+      }
       .checkBox{
-        width: 3%;
+        width: 30px;
         // display: flex;
         // align-items: center;
         // justify-content: center;
         text-align: center;
         input{
-          width: 40%;
+          width: 50%;
           height: 40%;
           background-color:rgb(18, 80, 92);
         }
       }
       .idBox, .pathBox{
         text-align: center;
+        width: 5%;
         &:hover{
           cursor: pointer;
       }
