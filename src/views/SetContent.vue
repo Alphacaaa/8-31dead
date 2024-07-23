@@ -14,7 +14,10 @@ export default {
             comfirmOptions:[],
             filteredOptions:[],
             optionsShow:true,
-            buttonShow:true
+            buttonShow:true,
+            // formData{
+
+            // },
         }
     },
     methods:{
@@ -35,7 +38,7 @@ export default {
             // this.comfirmOptions.push(...this.options)
             this.comfirmOptions.push(...this.options.filter(option => option.trim() !== ''))
             console.log(this.comfirmOptions)
-            this.options =[]
+            // this.options =[]
             this.optionsShow = true
             this.buttonShow = true
             console.log(this.optionsShow)
@@ -60,11 +63,11 @@ export default {
 <div class="Main">
     <!-- <breadCrum /> -->
     <div class="formBox">
-        <form action="">
+        <form action=""  @submit.prevent>
         <label for="">問題:</label>
         <input type="text" v-model="question">
-    </form>
-    <form class="selectCheck" action="">
+    <!-- </form>
+    <form class="selectCheck" action=""> -->
         <label for="">
             <input name="type" class="radio" type="radio" value="單選題" v-model="questionType">單選題
         </label>
@@ -77,8 +80,52 @@ export default {
         <input class="checkBox"type="checkbox">
         <label class="checkBxoLabel" for="">必填</label>
         
+        <div class="selection" >
+        <button class="comfirmss" @click="comfirm()">確定</button>
+            <label v-if="questionType === '單選題' || questionType === '複選題'">
+                <button v-if="buttonShow == true" @click="addSelection()"><i class="fa-solid fa-plus"></i></button>
+            </label>
+        </div>
+
+        <div class="optionAddAndView">
+        
+        <div class="selectionAdd" >
+            <label  v-for="(option,index) in options" :key="index">
+                <input v-if="optionsShow" type="text" v-model="options[index]" placeholder="輸入選項">
+                <!-- <button @click="comfirm()">確定</button> -->
+            </label>
+        </div>
+        <div class="comfirmList" v-if="comfirmOptions.length > 0 && questionType">
+            <!-- <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkBox">&nbsp&nbsp</th>
+                        <th>題號</th>
+                        <th>題目名稱</th>
+                        <th>種類</th>
+                        <th>必填</th>
+                        <th>12345</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(option,index) in comfirmOptions" :key="index">
+                        <td>{{ option }}</td>
+                    </tr>
+                </tbody>
+            </table> -->
+            <ul>
+                <li v-for="(option,index) in comfirmOptions" :key="index">
+                    {{ option }}
+                    <button @click="removeSelection(index)"><i class="fa-solid fa-minus"></i></button>
+                </li>
+                <!-- <button @click="removeSelection(index)">移除</button> -->
+            </ul>
+        </div>
+        </div>
+        <!-- <button type="submit">送出</button> -->
     </form>
-    <div class="selection" >
+
+    <!-- <div class="selection" >
         <button class="comfirm"@click="comfirm()">確定</button>
             <label v-if="questionType === '單選題' || questionType === '複選題'">
                 <button v-if="buttonShow == true" @click="addSelection()"><i class="fa-solid fa-plus"></i></button>
@@ -90,7 +137,6 @@ export default {
         <div class="selectionAdd" >
             <label  v-for="(option,index) in options" :key="index">
                 <input v-if="optionsShow" type="text" v-model="options[index]" placeholder="輸入選項">
-                <!-- <button @click="comfirm()">確定</button> -->
             </label>
         </div>
         <div class="comfirmList" v-if="comfirmOptions.length > 0 && questionType">
@@ -115,44 +161,11 @@ export default {
                     {{ option }}
                     <button @click="removeSelection(index)"><i class="fa-solid fa-minus"></i></button>
                 </li>
-                <!-- <button @click="removeSelection(index)">移除</button> -->
         </div>
     </div>
-    <!-- <SetList /> -->
-    <button type="submit"class="submit">送出</button>
+
+    <!-- <button type="submit"class="submit">送出</button> --> -->
 </div>
-    <!-- <SetList /> -->
-    <!-- <div class="workSpace">
-        <div class="Frame">
-            <div class="dataWindow">
-                <div class="inputContainer">
-                    <div class="question">
-                        <label for=""><b>問題:</b></label>
-                        <input type="text">
-                    </div>
-
-                    <div class="selectBox">
-                        <label for=""></label>
-                        <select name="" id="">
-                            <option value="">單選題</option>
-                            <option value="">多選題</option>
-                            <option value="">簡選題</option>
-                        </select>
-                        <label class="checkLabel" for="check">必填</label>
-                        <input class="checkBox" type="checkbox" id="check">
-                    </div>
-                    <div class="textBox">
-                        <label class="introLabel"for=""><b>選項:</b></label>
-                        <textarea name="" id=""></textarea>
-                    </div>
-
-                    
-                </div>
-            </div>
-            <SetList />
-        </div>
-
-    </div> -->
 </div>
 
 
@@ -176,12 +189,14 @@ export default {
     
     .formBox{
         width: 60vw;
-        height: 60vh;
+        height: 80vh;
         margin: auto;
         position: relative;
         form{
+            height: 100%;
             margin:20px;
-            display: flex;
+            // display: flex;
+            // flex-wrap: wrap;
             align-items: center;
             label{
             font-size: 24px;
@@ -209,7 +224,7 @@ export default {
             }
             .selection{
                 width: 100%;
-                height: 200px;
+                height: 50px;
             }
         }
         .selectionAdd{
@@ -224,7 +239,7 @@ export default {
             }
         }
         .optionAddAndView{
-            width: 60vw;
+            width: 100%;
             // display: flex;
             // height: 60%;
             .comfirmList{
@@ -236,7 +251,7 @@ export default {
             justify-content: end;
             align-items: center;
             width: 100%;
-            height: 10%;
+            height: 5%;
             button{  
                 display: block;
                 background-color: none;
