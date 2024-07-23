@@ -143,10 +143,16 @@ export default{
 .FatherBox{
   width: 100vw;
   height: 85vh;
-  background-color: #FBF6F3;
-  background-color: #ADEBF0;
-  background-color: #E8ECED;
-  background-color: #D6F7F8;
+  position:relative; 
+  overflow: hidden;
+  // background-color: #FBF6F3;
+  // background-color: #ADEBF0;
+  // background-color: #E8ECED;
+  // background-color: #D6F7F8;
+  // background-color: #F2D9B3;
+  // background-color: #F2D9B3;
+  // background-color: #FFF9E9;
+  
   // background-color: rgb(212, 247, 253);
   .topContainer{
     position: relative;
@@ -247,67 +253,5 @@ export default{
       color: #5D6C89;
     }
   }
-  .list{
-    width: 100dvw;
-    height: 67%;
-    margin:  auto;
-    table{
-      margin: auto;
-      width: 80%;
-      height: 10%;
-      
-      th{
-        // width: 1px;
-        background-color: #5D6C89;
-        // background-color: rgb(18, 80, 92);
-        color: white;
-        text-align: center;
-        border-right: 2px solid white;
-        // border-left: 2px solid white;
-      }
-      .checkBoxTop{
-        // width: 1%;
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-      }
-      .result{
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        // border-right: 2px solid rgb(18, 80, 92);
-      }
-      td{
-        height:50px;
-        font-size: 24px;
-        border: 1px solid rgb(255, 255, 255);
-        // background-color: #FEB06A;
-        background-color: rgb(220, 241, 245);
-
-        
-      }
-      .name{
-        width: 50%;
-      }
-      .checkBox{
-        width: 30px;
-        // display: flex;
-        // align-items: center;
-        // justify-content: center;
-        text-align: center;
-        input{
-          width: 50%;
-          height: 40%;
-          background-color:rgb(18, 80, 92);
-        }
-      }
-      .idBox, .pathBox{
-        text-align: center;
-        width: 5%;
-        &:hover{
-          cursor: pointer;
-      }
-
-    }
-  }
-}
 }
 </style>

@@ -39,7 +39,9 @@ export default {
             
         </li>
     </ul>
-    <RouterLink to="/QuestionaireSet"><button type="button" ><b>建立問卷</b></button></RouterLink>
+    
+    <RouterLink to="/QuestionaireSet"><button class="buildButton" type="button" ><b>建立問卷</b></button></RouterLink>
+    <button type="button">統計圖表</button>
 </div>
 </template>
 
@@ -59,6 +61,7 @@ export default {
         list-style: none;
         width: 100%;
         background-color: #134e72;
+        // background-color: #053c5e;
         li{
             // width: 100%;
             text-align: center;
@@ -78,7 +81,7 @@ export default {
     a{
         text-decoration: none;
     }
-    button{
+    .buildButton{
         margin: 500px auto;
         display: block;
         background-color: #D6F7F8;;
@@ -91,10 +94,12 @@ export default {
         bottom: -50%;
         left: 50%;
         transform: translate(-50%,-50%);
+        font-size: 24px;
         // &:hover{
         //     scale: 1.2;
         // }
-        
+
+    
     }
 }
 </style>

@@ -2,7 +2,7 @@
 import CreateQButton from '../components/CreateQButton.vue'
 import Header from '../components/Header.vue'
 import breadCrum from '../components/breadCrum.vue'
-import listPage from '../components/HomePageList.vue'
+import ManageList from '../components/ManageList.vue'
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 export default{
@@ -34,7 +34,7 @@ export default{
       Header,
       flatPickr,
       breadCrum,
-      listPage
+      ManageList
   }
 }
 </script>
@@ -71,7 +71,7 @@ export default{
       </div>
       
     </div>
-    <listPage />
+    <ManageList />
     <!-- <div class="list">
         <table >
           <thead>
@@ -123,7 +123,7 @@ export default{
 .FatherBox{
   width: 100vw;
   height: 85vh;
-  background-color: rgb(212, 247, 253);
+  // background-color: rgb(212, 247, 253);
   display: flex;
   flex-wrap: wrap;
   .bigBox{

@@ -8,7 +8,9 @@ export default {
 </script>
 
 <template>
-<RouterLink to="/CreateQmanage"><button type="button">建立問卷</button></RouterLink>
+    <div class="create">
+        
+    </div>
 </template>
 
 <style scoped lang="scss">

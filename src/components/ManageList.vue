@@ -7,68 +7,23 @@ export default{
 data() {
     return {
         users: [
-        { id: 1, name: '', age:  '',path:'前往'},
-        { id: 2, name: '', age:  '',path:'前往'},
-        { id: 3, name: '', age:  '',path:'前往'},
-        { id: 4, name: '', age:  '',path:'前往'},
-        { id: 5, name: '', age:  '',path:'前往'},
-        { id: 6, name: '', age:  '',path:'前往'},
-        { id: 7, name: '', age:  '',path:'前往'},
-        { id: 8, name: '', age:  '',path:'前往'},
-        { id: 9, name: '', age:  '',path:'前往'},
-        { id: 10, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 11, name: '', age:  '',path:'前往'},
-        // { id: 13, name: '', age:  '',path:'前往'},
+        { id: 1, name: '', age:  '',path:'編輯'},
+        { id: 2, name: '', age:  '',path:'編輯'},
+        { id: 3, name: '', age:  '',path:'編輯'},
+        { id: 4, name: '', age:  '',path:'編輯'},
+        { id: 5, name: '', age:  '',path:'編輯'},
+        { id: 6, name: '', age:  '',path:'編輯'},
+        { id: 7, name: '', age:  '',path:'編輯'},
+        { id: 8, name: '', age:  '',path:'編輯'},
+        { id: 9, name: '', age:  '',path:'編輯'},
+        { id: 10, name: '', age:  '',path:'編輯'},
+        { id: 11, name: '', age:  '',path:'編輯'},
+        { id: 11, name: '', age:  '',path:'編輯'},
+        { id: 11, name: '', age:  '',path:'編輯'},
+        { id: 11, name: '', age:  '',path:'編輯'},
+        { id: 11, name: '', age:  '',path:'編輯'},
+        { id: 11, name: '', age:  '',path:'編輯'},
+        { id: 11, name: '', age:  '',path:'編輯'},
     ],
         currentPage:1,
         tablePerPage:10,
@@ -192,12 +147,10 @@ data() {
         th{
         // width: 1px;
         background-color: #5D6C89;
-        background-color: #1F284C;
-        // background-color: #5A8100;
         // background-color: rgb(18, 80, 92);
         color: white;
         text-align: center;
-        border-right: 2px solid rgb(255, 255, 255);
+        border-right: 2px solid white;
         // border-left: 2px solid white;
         }
         .checkBoxTop{
@@ -213,11 +166,9 @@ data() {
         td{
         height:50px;
         font-size: 24px;
-        border: 1px solid rgb(0, 0, 0);
+        border: 1px solid rgb(255, 255, 255);
         // background-color: #FEB06A;
-        // background-color: #F2D9B3;
-        // background-color: #8E9DBF;
-        background-color: #FFF9E9;
+        background-color: rgb(220, 241, 245);
 
         
         }

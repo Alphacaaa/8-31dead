@@ -14,9 +14,13 @@ export default {
 
 <template>
     <div class="header">
+        <div class="birdIcon">
+            <!-- <img src="/public/bird-1293815_640.png" alt=""> -->
+        </div>
         <div class="router">
             <RouterLink to="/">所有問卷</RouterLink>
         </div>
+
         
         <div class="build">
             <RouterLink  to="/"><button type="button">問卷列表</button></RouterLink>
@@ -35,12 +39,18 @@ export default {
 
     .header{
         // background-color: rgb(212, 247, 253);
-        background-color: #0D659D;
+        // background-color: #2D4472;
+        // background-color: #5A8100;
         width: 100vw;
         height: 15vh;
         display: flex;
         .router{
             width: 10%;
+        }
+        img{
+            width: 150px;
+            // margin: 20px;
+            // height: 100px;
         }
         .build{
             display: flex;
@@ -53,8 +63,9 @@ export default {
             }
             button{
                 // display: block;
-                background-color: #053c5e;
-                color: white;
+                background-color: #1F284C;
+                background-color: #D9CCAC;
+                color: #1F284C;
                 border-radius:5px;
                 margin-right: 50px;
                 width: 90%;
@@ -62,7 +73,7 @@ export default {
                 font-size: 18px;
                 border: none;
                 &:hover{
-                    background-color: #104769;
+                    // background-color: #104769;
                 }
                 
             }

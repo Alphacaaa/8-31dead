@@ -39,7 +39,7 @@ data() {
         // { id: 13, name: '', age:  '',path:'前往'},
     ],
         currentPage:1,
-        tablePerPage:8,
+        tablePerPage:5,
         selectedDate: null,
         flatpickrOptions: {
         dateFormat: 'Y-m-d', // 設置日期格式
@@ -128,12 +128,13 @@ data() {
 }
 .tableContainer{
     position: relative;
-    width: 100%;
-    height: 70%;
+    width: 70vw;
+    height: 45vh;
+    margin: auto;
     .buttonDiv{
         width: 100%;
         position: absolute;
-        bottom:5%;
+        bottom:15%;
         display: flex;
         justify-content:center;
         align-items: center;
@@ -141,7 +142,7 @@ data() {
         button{
             display: block;
             margin: 5px;
-            background-color: #5D6C89;
+            // background-color: #5D6C89;
             color: white;
             border: none;
             border-radius: 5px;
@@ -181,7 +182,7 @@ data() {
         font-size: 24px;
         border: 1px solid rgb(255, 255, 255);
         // background-color: #FEB06A;
-        background-color: rgb(220, 241, 245);
+        // background-color: rgb(220, 241, 245);
 
         
         }
@@ -197,7 +198,7 @@ data() {
         input{
             width: 50%;
             height: 40%;
-            background-color:rgb(18, 80, 92);
+            // background-color:rgb(18, 80, 92);
         }
         }
         .idBox, .pathBox{

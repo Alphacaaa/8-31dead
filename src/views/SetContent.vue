@@ -3,10 +3,29 @@ import { RouterLink } from 'vue-router'
 // import SetContent from '../components/SetContent.vue'
 import breadCrum from '../components/breadCrum.vue'
 import Header from '../components/Header.vue'
-import SetList from '../components/SetList.vue'
+import SetList from '../components/SetContentList.vue'
 export default {
     data(){
         return{
+            question:'',
+            questionType:'單選題',
+            questionContent:'',
+            options:[],
+            comfirmOptions:[]
+        }
+    },
+    methods:{
+        addSelection(){
+            this.options.push('')
+        },
+        removeSelection(index){
+            this.options.splice(index,1)
+        },
+        comfirm(){
+            this.comfirmOptions = [...this.options]
+            // this.comfirmOptions.push(options[index])
+            console.log(comfirmOptions)
+            // this.options =[]
         }
     },
     components: {
@@ -25,8 +44,53 @@ export default {
 <!-- <breadCrum /> -->
 
 <div class="Main">
-    <breadCrum />
-    <div class="workSpace">
+    <!-- <breadCrum /> -->
+    <div class="formBox">
+        <form action="">
+        <label for="">問題:</label>
+        <input type="text" v-model="question">
+    </form>
+    <form class="selectCheck" action="">
+        <label for="">
+            <input name="type" class="radio" type="radio" value="單選題" v-model="questionType">單選題
+        </label>
+        <label for="">
+            <input name="type"  class="radio" type="radio" value="複選題" v-model="questionType">多選題
+        </label>
+        <label for="">
+            <input name="type" class="radio" type="radio" value="簡答題" v-model="questionType">簡答題
+        </label>
+        <input class="checkBox"type="checkbox">
+        <label class="checkBxoLabel" for="">必填</label>
+        
+    </form>
+
+
+    <div class="optionAddAndView">
+        <div class="comfirmList" v-if="comfirmOptions.length > 0 && questionType">
+            <ul>
+                <li v-for="(option,index) in comfirmOptions" :key="index">
+                    {{ option }}
+                </li>
+            </ul>
+        </div>
+        <div class="selectionAdd" v-if="questionType === '單選題' || questionType === '複選題'">
+            <label v-for="(option,index) in options" :key="index">
+                <input type="text" v-model="options[index]" placeholder="輸入選項">
+                <button @click="removeSelection(index)">移除</button>
+                
+            </label>
+        </div>
+        <div class="selection" >
+            <label v-if="questionType === '單選題' || questionType === '複選題'">
+                <button @click="addSelection()">新增選項</button>
+                <button @click="comfirm()">確定</button>
+            </label>
+        </div>
+    </div>
+</div>
+    <!-- <SetList /> -->
+    <!-- <div class="workSpace">
         <div class="Frame">
             <div class="dataWindow">
                 <div class="inputContainer">
@@ -56,7 +120,7 @@ export default {
             <SetList />
         </div>
 
-    </div>
+    </div> -->
 </div>
 
 
@@ -64,7 +128,7 @@ export default {
 
 <style scoped lang="scss">
 *{
-    // border:1px solid rgb(0, 0, 0);
+    border:1px solid rgb(0, 0, 0);
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -74,105 +138,65 @@ export default {
 }
 .Main{
     width: 100vw;
-    height: 85vh;
+    // height: 85vh;
     display: flex;
     flex-wrap: wrap;
-    background-color: rgb(221, 249, 253);;
-    // justify-content: center;
-    // align-items: center;
-    .workSpace{
-        width: 84vw;
-        height: 100%;
-        .buttonBox{
-            display: flex;
-            justify-content: end;
-
-            height: 10%;
-            button{
-                display: block;
-                margin-right: 200px;
-                width: 200px;
-                height: 80%;
-                font-size: 24px;
-            }
-        }
-        .Frame{
-            // margin: auto;
-    width: 85vw;
-    height: 85vh;
-    // display: flex;
-    // flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    // background-color: #649ABC;
-    // border:1px solid black;
-    .dataWindow{
-        display: flex;
+    
+    .formBox{
+        width: 60vw;
+        height: 40vh;
         margin: auto;
-        // flex-wrap: wrap;
-        justify-content: center;
-        // align-items: center;
-        width: 85%;
-        height: 30%;
-        .inputContainer{
-            // display: flex;
-            // flex-wrap: wrap;
-            // justify-content: center;
-            // align-items: center;
-            width: 90%;
-            height: 30%;
-            // margin: auto;
-            .question{
-                display: flex;
-                align-items: center;
-                margin-bottom: 20px;
-                margin-top: 20px;
-                input{
-                    width: 60%;
-                    height: 50%;
-                }
-                label{
-                    height: 5%;
-                    width: 8%;
-                    font-size: 24px;
-                    text-align: center;
-                    display: flex;
-                    align-items: center;
-                }
+        position: relative;
+        form{
+            margin:20px;
+            display: flex;
+            align-items: center;
+            label{
+            font-size: 24px;
             }
-                .selectBox{
-                    width: 84%;
-                    height: 10%;
-                    margin: 30px auto;
-                    display: flex;
-                    align-items: center;
-                    .checkLabel{
-                        width: 5%;
-                    }
-                    select{
-                        width: 10%;
-                        margin-right: 50px;
-                    }
-                    .checkBox{
-                        height:20px;
-                        width: 40px;
-                    }
-                    }
-                .textBox{
-                    display: flex;
-                    height: 40%;
-                    label{
-                        width: 8%;
-                    }
-                    textArea{
-                        width: 60%;
-                    }
-                }
+            .introLabel{
+                height: 200px;
+            }
+            input{
+                width: 90%;
+                font-size: 24px;
+                // height: 100%;
+                margin-left: 20px;
+                // line-height: 200px;
+            }
+            .radio{
+                width: 10%;
+            }
+            .checkBox{
+                width: 20px;
+                margin-left: 10px;
+            }
+            .checkBxoLabel{
+                font-size: 24px;
+                // margin-left: 20px;
+            }
+            .selection{
+                width: 100%;
+                height: 200px;
             }
         }
-
-    }
+        .selectionAdd{
+            
+            width: 100%;
+            label{
+                width: 100%;
+            }
+            input{
+                width: 100%;
+            }
+        }
+        .optionAddAndView{
+            width: 60vw;
+            // height: 60%;
+        }
+        ul{
+            text-decoration: none;
+        }
     }
 }
-
 </style>
