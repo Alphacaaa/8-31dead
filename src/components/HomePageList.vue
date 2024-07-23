@@ -199,6 +199,7 @@ data() {
         text-align: center;
         border-right: 2px solid rgb(255, 255, 255);
         // border-left: 2px solid white;
+        // height: 50%;
         }
         .checkBoxTop{
         // width: 1%;

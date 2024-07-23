@@ -11,21 +11,35 @@ export default {
             questionType:'單選題',
             questionContent:'',
             options:[],
-            comfirmOptions:[]
+            comfirmOptions:[],
+            filteredOptions:[],
+            optionsShow:true,
+            buttonShow:true
         }
     },
     methods:{
         addSelection(){
             this.options.push('')
+
+            this.buttonShow = false
+            console.log(this.optionsShow)
         },
         removeSelection(index){
             this.options.splice(index,1)
+            this.comfirmOptions.splice(index,1)
+            console.log(this.comfirmOptions)
+
         },
         comfirm(){
-            this.comfirmOptions = [...this.options]
-            // this.comfirmOptions.push(options[index])
-            console.log(comfirmOptions)
-            // this.options =[]
+
+            // this.comfirmOptions.push(...this.options)
+            this.comfirmOptions.push(...this.options.filter(option => option.trim() !== ''))
+            console.log(this.comfirmOptions)
+            this.options =[]
+            this.optionsShow = true
+            this.buttonShow = true
+            console.log(this.optionsShow)
+
         }
     },
     components: {
@@ -64,30 +78,48 @@ export default {
         <label class="checkBxoLabel" for="">必填</label>
         
     </form>
-
+    <div class="selection" >
+        <button class="comfirm"@click="comfirm()">確定</button>
+            <label v-if="questionType === '單選題' || questionType === '複選題'">
+                <button v-if="buttonShow == true" @click="addSelection()"><i class="fa-solid fa-plus"></i></button>
+            </label>
+        </div>
 
     <div class="optionAddAndView">
+        
+        <div class="selectionAdd" >
+            <label  v-for="(option,index) in options" :key="index">
+                <input v-if="optionsShow" type="text" v-model="options[index]" placeholder="輸入選項">
+                <!-- <button @click="comfirm()">確定</button> -->
+            </label>
+        </div>
         <div class="comfirmList" v-if="comfirmOptions.length > 0 && questionType">
-            <ul>
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkBox">&nbsp&nbsp</th>
+                        <th>題號</th>
+                        <th>題目名稱</th>
+                        <th>種類</th>
+                        <th>必填</th>
+                        <th>12345</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(option,index) in comfirmOptions" :key="index">
+                        <td>{{ option }}</td>
+                    </tr>
+                </tbody>
+            </table>
                 <li v-for="(option,index) in comfirmOptions" :key="index">
                     {{ option }}
+                    <button @click="removeSelection(index)"><i class="fa-solid fa-minus"></i></button>
                 </li>
-            </ul>
-        </div>
-        <div class="selectionAdd" v-if="questionType === '單選題' || questionType === '複選題'">
-            <label v-for="(option,index) in options" :key="index">
-                <input type="text" v-model="options[index]" placeholder="輸入選項">
-                <button @click="removeSelection(index)">移除</button>
-                
-            </label>
-        </div>
-        <div class="selection" >
-            <label v-if="questionType === '單選題' || questionType === '複選題'">
-                <button @click="addSelection()">新增選項</button>
-                <button @click="comfirm()">確定</button>
-            </label>
+                <!-- <button @click="removeSelection(index)">移除</button> -->
         </div>
     </div>
+    <!-- <SetList /> -->
+    <button type="submit"class="submit">送出</button>
 </div>
     <!-- <SetList /> -->
     <!-- <div class="workSpace">
@@ -144,7 +176,7 @@ export default {
     
     .formBox{
         width: 60vw;
-        height: 40vh;
+        height: 60vh;
         margin: auto;
         position: relative;
         form{
@@ -181,21 +213,49 @@ export default {
             }
         }
         .selectionAdd{
-            
+            display: flex;
+            flex-wrap: wrap;
             width: 100%;
             label{
                 width: 100%;
             }
             input{
-                width: 100%;
+                width: 90%;
             }
         }
         .optionAddAndView{
             width: 60vw;
+            // display: flex;
             // height: 60%;
+            .comfirmList{
+                width: 100%;  
+            }
+        }
+        .selection{
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            width: 100%;
+            height: 10%;
+            button{  
+                display: block;
+                background-color: none;
+                // margin-right: 50px;
+            }
         }
         ul{
-            text-decoration: none;
+            list-style: none;
+            position: relative;
+
+            button{
+                position: absolute;
+                right: 0;
+            }
+        }
+        .submit{
+            position: absolute;
+            bottom: 0;
+            right: 0;
         }
     }
 }
