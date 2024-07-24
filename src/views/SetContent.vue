@@ -4,26 +4,45 @@ import { RouterLink } from 'vue-router'
 import breadCrum from '../components/breadCrum.vue'
 import Header from '../components/Header.vue'
 import SetList from '../components/SetContentList.vue'
+import preview from '../components/preview.vue'
+// sessionStorage.setItem('key', JSON.stringify(questionnaire));
+// const  data = JSON.parse(sessionStorage.getItem('key'));
 export default {
     data(){
         return{
-            question:'',
-            questionType:'單選題',
-            questionContent:'',
-            options:[],
-            comfirmOptions:[],
-            filteredOptions:[],
+            questionnaire:{
+                questionName:'',
+                questionIntro:'',
+                startTime:'',
+                endTime:'',
+                question:'',
+                questionType:'單選題',
+                necessary:false,
+                questionContent:'',
+                options:[],
+                comfirmOptions:[],
+                filteredOptions:[],
+            },
+            
+            
             optionsShow:true,
             buttonShow:true,
-            editAllow:false
+            editAllow:false,
+            savedAndShow:false
             // formData{
 
             // },
         }
     },
+    mounted(){
+        const savedQuestionnaire = sessionStorage.getItem('questionnaire')
+        if (savedQuestionnaire){
+            this.questionnaire = JSON.parse(savedQuestionnaire);
+        }
+    },
     methods:{
         addSelection(){
-            this.options.push(
+            this.questionnaire.options.push(
                 {
                 value :'', editAllow : false
                 }
@@ -33,8 +52,8 @@ export default {
             console.log(this.optionsShow)
         },
         removeSelection(index){
-            this.options.splice(index,1)
-            this.comfirmOptions.splice(index,1)
+            this.questionnaire.options.splice(index,1)
+            this.questionnaire.comfirmOptions.splice(index,1)
             console.log(this.comfirmOptions)
             this.optionsShow = true
             this.buttonShow = true
@@ -42,7 +61,7 @@ export default {
 
         },
         cancelSelection(index){
-            this.options.splice(index,1)
+            this.questionnaire.options.splice(index,1)
             // this.comfirmOptions.splice(index,1)
             console.log(this.comfirmOptions)
             this.optionsShow = true
@@ -52,9 +71,9 @@ export default {
         },
         comfirm(){
             // this.comfirmOptions.push(...this.options)
-            this.comfirmOptions.push(...this.options.filter(option => option.value.trim() !== ''))
-            console.log(this.comfirmOptions)
-            this.options =[]
+            this.questionnaire.comfirmOptions.push(...this.questionnaire.options.filter(option => option.value.trim() !== ''))
+            console.log(this.questionnaire.comfirmOptions)
+            this.questionnaire.options =[]
             this.optionsShow = false
             this.buttonShow = true
             console.log(this.optionsShow)
@@ -62,13 +81,30 @@ export default {
         editSelection(index){
             // this.editAllow = true
             console.log(this.editAllow)
-            this.comfirmOptions.forEach((option,editIndex)=>{
-                option.editAllow = (index === editIndex);
-            })
+            this.questionnaire.comfirmOptions.forEach((option,editIndex)=>{
+                if(index === editIndex) {
+                    option.editAllow = true;
+                    console.log(this.questionnaire.comfirmOptions)
+                    console.log(this.questionnaire.comfirmOptions.editAllow)
+                    console.log(option.editAllow)
+                }else{
+                    option.editAllow = false;
+            }
+            //     this.questionnaire.comfirmOptions[index].editAllow = (index === editIndex);
+            // })
             console.log(this.editAllow)
-        },
+        })
+    },
+        
         saveEdited(index){
-            this.comfirmOptions[index].editAllow = false
+            this.questionnaire.comfirmOptions[index].editAllow = false
+        },
+        submitForm(){
+            // 將問卷數據保存到 sessionStorage 中
+            sessionStorage.setItem('questionnaire', JSON.stringify(this.questionnaire));
+            console.log("問卷數據已保存到 sessionStorage 中");
+            this.savedAndShow = true
+            console.log(this.savedAndShow)
         }
     },
     components: {
@@ -76,7 +112,8 @@ export default {
         // SetContent,
         breadCrum,
         Header,
-        SetList
+        SetList,
+        preview
     }
     
 }
@@ -91,22 +128,22 @@ export default {
     <div class="formBox">
         <form action=""  @submit.prevent>
             <label for="">問題:</label>
-            <input type="text" v-model="question">
+            <input type="text" v-model="questionnaire.question">
             <label for="">
-                <input name="type" class="radio" type="radio" value="單選題" v-model="questionType">單選題
+                <input name="type" class="radio" type="radio" value="單選題" v-model="questionnaire.questionType">單選題
             </label>
             <label for="">
-                <input name="type"  class="radio" type="radio" value="複選題" v-model="questionType">多選題
+                <input name="type"  class="radio" type="radio" value="複選題" v-model="questionnaire.questionType">多選題
             </label>
             <label for="">
-                <input name="type" class="radio" type="radio" value="簡答題" v-model="questionType">簡答題
+                <input name="type" class="radio" type="radio" value="簡答題" v-model="questionnaire.questionType">簡答題
             </label>
-            <input class="checkBox"type="checkbox">
+            <input v-model="questionnaire.necessary" class="checkBox"type="checkbox">
             <label class="checkBxoLabel" for="">必填</label>
         
             <div class="selection" >
             
-                <label class="newSelection"v-if="questionType === '單選題' || questionType === '複選題'">
+                <label class="newSelection"v-if="questionnaire.questionType === '單選題' || questionnaire.questionType === '複選題'">
                     <span v-if="buttonShow == true">新增選項</span>
                     <button v-if="buttonShow == true" @click="addSelection()"><i class="fa-solid fa-plus"></i></button>
                     <!-- <button class="comfirmss" @click="comfirm()">新增</button> -->
@@ -116,16 +153,16 @@ export default {
             <div class="optionAddAndView">
             
                 <transition-group name="anime" tag="div" class="selectionAdd">
-                    <label  v-for="(option,index) in options" :key="index">
-                        <input v-if="optionsShow" type="text" v-model="options[index].value" placeholder="輸入選項">
+                    <label  v-for="(option,index) in questionnaire.options" :key="index">
+                        <input v-if="optionsShow" type="text" v-model="questionnaire.options[index].value" placeholder="輸入選項">
                         <button class="comfirmss" @click="comfirm()"><i class="fa-solid fa-check-to-slot"></i></button>
                         <button class="remove" @click="cancelSelection(index)"><i class="fa-solid fa-xmark"></i></button>
                     </label>
                 </transition-group>
                 <!-- <transition-group name="anime" tag="div" class="comfirmList" v-if="comfirmOptions.length > 0 && questionType"> -->
-                <div class="comfirmList" v-if="comfirmOptions.length > 0 && questionType">
+                <div class="comfirmList" v-if="questionnaire.comfirmOptions.length > 0 && questionnaire.questionType">
                     <ul>
-                        <li v-for="(option,index) in comfirmOptions" :key="index">
+                        <li v-for="(option,index) in questionnaire.comfirmOptions" :key="index">
                             <span v-if="!(option.editAllow)">{{ option.value }}</span>
                             <input class="editInput" v-model="option.value" v-if="option.editAllow" @keyup.enter="saveEdited(index)" type="text">
                             <button class="editComfirm" v-if="option.editAllow" @click="saveEdited(index)" ><i class="fa-solid fa-check"></i></button>
@@ -137,9 +174,10 @@ export default {
                 <!-- </transition-group> -->
                 
             </div>
-        <!-- <button type="submit">送出</button> -->
+        <button type="submit" @click="submitForm()">送出</button>
         </form>
     </div>
+    <preview v-if="savedAndShow"/>
 </div>
 
 
@@ -147,7 +185,7 @@ export default {
 
 <style scoped lang="scss">
 *{
-    // border:1px solid rgb(0, 0, 0);
+    border:1px solid rgb(0, 0, 0);
     box-sizing: border-box;
     margin: 0;
     padding: 0;
