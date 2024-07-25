@@ -40,7 +40,7 @@ export default {
         </li>
     </ul>
     
-    <RouterLink to="/QuestionaireSet"><button class="buildButton" type="button" ><b>建立問卷</b></button></RouterLink>
+    <!-- <RouterLink to="/QuestionaireSet"><button class="buildButton" type="button" ><b>建立問卷</b></button></RouterLink> -->
     <button type="button">統計圖表</button>
 </div>
 </template>
@@ -48,29 +48,35 @@ export default {
 <style scoped lang="scss">
 *{
     box-sizing: border-box;
+    // border: 1px solid rgb(18, 80, 92);
     margin: 0;
     padding: 0;
 }
 .breadList{
-    height: 85dvh;
-    width:15dvw;
-    background-color:#053c5e;
-    border: 1px solid rgb(18, 80, 92);
+    // height: 85dvh;
+    width:100dvw;
+    height: 10vh;
+    background-color:#e3dede;
+    // border: 1px solid rgb(18, 80, 92);
     position: relative;
+    display: flex;
+    align-items: center;
     ul{
         list-style: none;
         width: 100%;
-        background-color: #134e72;
+        background-color: #e3dede;
+        display: flex;
+        margin: 100px;
         // background-color: #053c5e;
         li{
             // width: 100%;
             text-align: center;
-            margin: 50px 0;
-            background-color: #216792;
+            margin: 20px;
+            background-color: #e3dede;
             font-size: 30px;
             // border-top: 3px solid #e8f3f8;
             // border-bottom: 3px solid #e8f3f8;
-            color:white;
+            color:#333030;
             &:hover{
                 cursor: pointer;
             }

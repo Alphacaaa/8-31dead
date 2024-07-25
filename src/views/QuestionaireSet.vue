@@ -56,10 +56,9 @@ export default {
 
 <template>
 <Header />
-<!-- <breadCrum /> -->
+<breadCrum />
 
 <div class="Main">
-    <!-- <breadCrum /> -->
     <div class="formBox">
         <form action="" @submit.prevent>
             <div class="questionName">
@@ -78,7 +77,13 @@ export default {
                 <label for=""><b>結束時間:</b></label>
                 <flat-pickr  class="timePicker" v-model="questionnaire.endTime" :config="flatpickrOptions"></flat-pickr>
             </div>
-            <button type="submit" @click="goNextAndSave()">下一步</button>
+            <button class="btn" type="submit" @click="goNextAndSave()">
+                下一步
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </form>
     </div>
 </div>
@@ -92,6 +97,7 @@ export default {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    
     // font-size: 24px;
     // background-color: #ECE2C6;
     // background-color: #649ABC;
@@ -101,7 +107,7 @@ export default {
 .Main{
     width: 100vw;
     height: 85vh;
-    
+    background-color: #e3dede;
     // display: flex;
     // flex-wrap: wrap;
     .formBox{
@@ -116,7 +122,7 @@ export default {
             // display: flex;
             // align-items: center;
             label{
-            font-size: 36px;
+            font-size: 24px;
             }
             .introLabel{
                 height: 300px;
@@ -132,6 +138,7 @@ export default {
             .intro{
                 height: 300px;
                 margin-left: 20px;
+                margin-top: 50px;
             }
         }
         .timeBox{
@@ -139,10 +146,11 @@ export default {
             width: 30%;
             height: 10%;
             label{
-                font-size: 36px;
+                font-size: 24px;
             }
             .timePicker{
                 margin-left:20px;
+                background-color: #8b8687;
             }
         }
         button{
@@ -153,6 +161,86 @@ export default {
     }
 }
 
-
+.btn,
+.btn:focus,
+.btn:hover {
+    position: relative;
+    min-width: 200px;
+    border: 1px solid #000000;
+    color: #000000;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    -webkit-font-smoothing: antialiased;
+    padding: 10px 20px;
+}
+.btn span:nth-child(1),
+.btn span:nth-child(2),
+.btn span:nth-child(3),
+.btn span:nth-child(4) {
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    background-color: #000000;
+}
+.btn span:nth-child(1) {
+                    width: 1px;
+                    left: 0;
+                    bottom: 0;
+}
+.btn span:nth-child(2) {
+                    height: 1px;
+                    left: 0;
+                    top: 0;
+}
+.btn span:nth-child(3) {
+                    width: 1px;
+                    right: 0;
+                    top: 0;
+}
+.btn span:nth-child(4) {
+                    height: 1px;
+                    right: 0;
+                    bottom: 0;
+}
+.btn:hover {
+                    border: none;
+}
+.btn:hover span:nth-child(1) {
+    animation: move1 1500ms infinite ease;
+}
+.btn:hover span:nth-child(2) {
+                    animation: move2 1500ms infinite ease;
+}
+.btn:hover span:nth-child(3) {
+                    animation: move3 1500ms infinite ease;
+}
+.btn:hover span:nth-child(4) {
+                    animation: move4 1500ms infinite ease;
+}
+@keyframes move1 {
+                    0% { height: 100%; bottom: 0; }
+                    54% { height: 0; bottom: 100%; }
+                    55% { height: 0; bottom: 0; }
+                    100% { height: 100%; bottom: 0; }
+}
+@keyframes move2 {
+                    0% { width: 0; left: 0; }
+                    50% { width: 100%; left: 0; }
+                    100% { width: 0; left: 100%; }
+}
+@keyframes move3 {
+                    0% { height: 100%; top: 0; }
+                    54% { height: 0; top: 100%; }
+                    55% { height: 0; top: 0; }
+                    100% { height: 100%; top: 0; }
+}
+@keyframes move4 {
+                    0% { width: 0; right: 0; }
+                    55% { width: 100%; right: 0; }
+                    100% { width: 0; right: 100%; }
+}
 </style>
 

@@ -28,7 +28,11 @@ export default{
       }
     };
   },
-
+  methods:{
+    create(){
+      this.$router.push('/QuestionaireSet')
+    }
+  },
   components:{
       CreateQButton,
       Header,
@@ -44,25 +48,20 @@ export default{
   
   
   <div class="FatherBox">
-    <breadCrum />
-    <div class="bigBox">
-      <!-- <div class="topContainer">
-      <div class="searchAndTimeBox">
-        <div class="search">
-          <input type="text" placeholder="搜尋問卷">
-        </div>
-        <div class="statTime">
-          <div class="timeBox">
-            <flat-pickr class="timePicker" v-model="selectedStartDate" :config="flatpickrOptions"></flat-pickr>
-          </div>
-          <span>&nbsp~&nbsp</span>
-          <div class="timeBox">
-            <flat-pickr  class="timePicker" v-model="selectedEndDate" :config="flatpickrOptions"></flat-pickr>
-          </div>
-        </div>
-        <button type="button"><i class="fa-solid fa-magnifying-glass"></i>&nbsp搜尋</button>
+    <!-- <breadCrum /> -->
+    <div class="sideBox">
+      <div class="buttonBox">
+        <a @click="create()" href="javascript: void(0)" class="btn">
+        建立問卷
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </a>
       </div>
-    </div> -->
+      
+    </div>
+    <div class="bigBox">
     <div class="iconContainer">
       <span><b>我的問卷</b></span>
       <div class="icon">
@@ -129,6 +128,7 @@ export default{
   .bigBox{
     width: 85vw;
     height: 85vh;
+    margin: auto;
     .topContainer{
       position: relative;
       width: 84vw;
@@ -230,7 +230,103 @@ export default{
 }
   }
 
-//   .list{
+  .sideBox{
+    height: 85vh;
+    width: 15vw;
+    border: 1px solid black;
+    background-color: #333030 ;
+    display: flex;
+    justify-content: center;
+    .buttonBox{
+      width: 100%;
+      height: 6%;
+      margin-top:600px;
+      display: flex;
+      justify-content: center;
+    }
+    .btn,
+.btn:focus,
+.btn:hover {
+    position: relative;
+    min-width: 100px;
+    border: 1px solid #FFFFFF;
+    color: #FFFFFF;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    -webkit-font-smoothing: antialiased;
+    padding: 10px 20px;
+}
+.btn span:nth-child(1),
+.btn span:nth-child(2),
+.btn span:nth-child(3),
+.btn span:nth-child(4) {
+    content: "";
+    display: block;
+    position: absolute;
+    background-color: #FFFFFF;
+}
+.btn span:nth-child(1) {
+    width: 1px;
+    left: 0;
+    bottom: 0;
+}
+.btn span:nth-child(2) {
+    height: 1px;
+    left: 0;
+    top: 0;
+}
+.btn span:nth-child(3) {
+    width: 1px;
+    right: 0;
+    top: 0;
+}
+.btn span:nth-child(4) {
+    height: 1px;
+    right: 0;
+    bottom: 0;
+}
+.btn:hover {
+    border: none;
+}
+.btn:hover span:nth-child(1) {
+    animation: move1 1500ms infinite ease;
+}
+.btn:hover span:nth-child(2) {
+    animation: move2 1500ms infinite ease;
+}
+.btn:hover span:nth-child(3) {
+    animation: move3 1500ms infinite ease;
+}
+.btn:hover span:nth-child(4) {
+    animation: move4 1500ms infinite ease;
+}
+@keyframes move1 {
+    0% { height: 100%; bottom: 0; }
+    54% { height: 0; bottom: 100%; }
+    55% { height: 0; bottom: 0; }
+    100% { height: 100%; bottom: 0; }
+}
+@keyframes move2 {
+    0% { width: 0; left: 0; }
+    50% { width: 100%; left: 0; }
+    100% { width: 0; left: 100%; }
+}
+@keyframes move3 {
+    0% { height: 100%; top: 0; }
+    54% { height: 0; top: 100%; }
+    55% { height: 0; top: 0; }
+    100% { height: 100%; top: 0; }
+}
+@keyframes move4 {
+    0% { width: 0; right: 0; }
+    55% { width: 100%; right: 0; }
+    100% { width: 0; right: 100%; }
+}
+  }
+  
 //     width: 84vw;
 //     height: 67%;
 //     // margin:  auto;
@@ -286,8 +382,6 @@ export default{
 //           cursor: pointer;
 //       }
 
-//     }
-//   }
-// }
+// 
 
 </style>
