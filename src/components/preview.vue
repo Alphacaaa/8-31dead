@@ -2,7 +2,7 @@
 export default{
     data(){
         return{
-            questionnaire:{
+            sessionQuestionnaire:{
                 questionName:'',
                 questionIntro:'',
                 startTime:'',
@@ -18,9 +18,9 @@ export default{
         }
     },
     mounted(){
-        const savedQuestionnaire = sessionStorage.getItem('questionnaire')
+        const savedQuestionnaire = sessionStorage.getItem('sessionQuestionnaire')
         if(savedQuestionnaire){
-            this.questionnaire = JSON.parse(savedQuestionnaire)
+            this.sessionQuestionnaire = JSON.parse(savedQuestionnaire)
         }
     }
 }
@@ -28,14 +28,14 @@ export default{
 
 <template>
     <div class="previewBox">
-        <h1>{{ questionnaire.questionName }}</h1>
-        <h1>{{ questionnaire.question }}</h1>
-        <h1>{{ questionnaire.questionType }}</h1>
-        <h1>{{ questionnaire.necessary ? '必填' : '' }}</h1>
-        <h1>{{ questionnaire.startTime }}</h1>
-        <h1>{{ questionnaire.endTime }}</h1>
+        <h1>{{ sessionQuestionnaire.questionName }}</h1>
+        <h1>{{ sessionQuestionnaire.question }}</h1>
+        <h1>{{ sessionQuestionnaire.questionType }}</h1>
+        <h1>{{ sessionQuestionnaire.necessary ? '必填' : '' }}</h1>
+        <h1>{{ sessionQuestionnaire.startTime }}</h1>
+        <h1>{{ sessionQuestionnaire.endTime }}</h1>
         <ul>
-            <li v-for="option in questionnaire.comfirmOptions">
+            <li v-for="option in sessionQuestionnaire.comfirmOptions">
                 {{ option.value }}
             </li>
         </ul>

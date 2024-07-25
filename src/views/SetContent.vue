@@ -4,12 +4,14 @@ import { RouterLink } from 'vue-router'
 import breadCrum from '../components/breadCrum.vue'
 import Header from '../components/Header.vue'
 import SetList from '../components/SetContentList.vue'
-import preview from '../components/preview.vue'
+// import preview from '../components/preview.vue'
 // sessionStorage.setItem('key', JSON.stringify(questionnaire));
 // const  data = JSON.parse(sessionStorage.getItem('key'));
 export default {
     data(){
         return{
+            // sessionQuestionnaire: JSON.parse(sessionStorage.getItem('sessionQuestionnaire')) || [],
+            sessionQuestionnaire:[],
             questionnaire:{
                 questionName:'',
                 questionIntro:'',
@@ -23,7 +25,7 @@ export default {
                 comfirmOptions:[],
                 filteredOptions:[],
             },
-            
+            session:[],
             
             optionsShow:true,
             buttonShow:true,
@@ -35,10 +37,13 @@ export default {
         }
     },
     mounted(){
+        // savedAndShow = false
         const savedQuestionnaire = sessionStorage.getItem('questionnaire')
+        console.log(savedQuestionnaire)
         if (savedQuestionnaire){
             this.questionnaire = JSON.parse(savedQuestionnaire);
         }
+        console.log(this.questionnaire)
     },
     methods:{
         addSelection(){
@@ -100,11 +105,56 @@ export default {
             this.questionnaire.comfirmOptions[index].editAllow = false
         },
         submitForm(){
+            this.sessionQuestionnaire.push(this.questionnaire)
+            console.log(this.sessionQuestionnaire)
+            console.log("問題建立"+this.questionnaire)
+            console.log("這是資料庫"+sessionStorage.getItem('sessionQuestionnaire'))
+            if(sessionStorage.getItem('sessionQuestionnaire') === null){
+                sessionStorage.setItem('sessionQuestionnaire',JSON.stringify(this.sessionQuestionnaire));
+                console.log("幹")
+
+            }else{
+                this.session = JSON.parse(sessionStorage.getItem('sessionQuestionnaire'))
+                
+                this.session.push(this.questionnaire)
+                console.log("這是session"+this.session)
+                console.log(this.questionnaire)
+                sessionStorage.setItem('sessionQuestionnaire',JSON.stringify(this.session));
+                console.log("幹你")
+                console.log(sessionStorage.getItem('sessionQuestionnaire'))
+            }   
+
+            
+            
+            this.questionnaire = {
+                questionName:'',
+                questionIntro:'',
+                startTime:'',
+                endTime:'',
+                question:'',
+                questionType:'單選題',
+                necessary:false,
+                questionContent:'',
+                options:[],
+                comfirmOptions:[],
+                filteredOptions:[],
+            }
+            console.log(this.questionnaire)
             // 將問卷數據保存到 sessionStorage 中
-            sessionStorage.setItem('questionnaire', JSON.stringify(this.questionnaire));
+            // sessionStorage.setItem('sessionQuestionnaire', JSON.stringify(this.sessionQuestionnaire));
             console.log("問卷數據已保存到 sessionStorage 中");
             this.savedAndShow = true
             console.log(this.savedAndShow)
+        },
+        preview(){
+            this.$router.push('/preview')
+        },
+        clear(){
+            sessionStorage.clear();
+            console.log(sessionStorage.getItem('sessionQuestionnaire'))
+        },
+        backToQset(){
+            this.$router.push('/QuestionaireSet')
         }
     },
     components: {
@@ -113,7 +163,7 @@ export default {
         breadCrum,
         Header,
         SetList,
-        preview
+        // preview
     }
     
 }
@@ -133,7 +183,7 @@ export default {
                 <input name="type" class="radio" type="radio" value="單選題" v-model="questionnaire.questionType">單選題
             </label>
             <label for="">
-                <input name="type"  class="radio" type="radio" value="複選題" v-model="questionnaire.questionType">多選題
+                <input name="type"  class="radio" type="radio" value="多選題" v-model="questionnaire.questionType">多選題
             </label>
             <label for="">
                 <input name="type" class="radio" type="radio" value="簡答題" v-model="questionnaire.questionType">簡答題
@@ -143,7 +193,7 @@ export default {
         
             <div class="selection" >
             
-                <label class="newSelection"v-if="questionnaire.questionType === '單選題' || questionnaire.questionType === '複選題'">
+                <label class="newSelection"v-if="questionnaire.questionType === '單選題' || questionnaire.questionType === '多選題'">
                     <span v-if="buttonShow == true">新增選項</span>
                     <button v-if="buttonShow == true" @click="addSelection()"><i class="fa-solid fa-plus"></i></button>
                     <!-- <button class="comfirmss" @click="comfirm()">新增</button> -->
@@ -174,10 +224,25 @@ export default {
                 <!-- </transition-group> -->
                 
             </div>
-        <button type="submit" @click="submitForm()">送出</button>
+        <button type="submit" @click="submitForm()">加入</button>
+        <button type="button" @click="preview()">預覽</button>
+        <button type="button" @click="clear()">清空</button>
+        <button type="button" @click="backToQset()">返回</button>
         </form>
     </div>
-    <preview v-if="savedAndShow"/>
+    <div class="rightnowSee">
+        <p>問題:{{ questionnaire.question }}</p>
+        <p>題型:{{ questionnaire.questionType }}</p>
+        <p>{{ questionnaire.necessary ? '必填':'' }}</p>
+        <p v-if="questionnaire.questionType === '單選題' || questionnaire.questionType === '多選題'">選項:</p>
+        <ul>
+            <li v-for="(option,index) in questionnaire.comfirmOptions">
+                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp{{index + 1}}﹑{{ option.value }}
+            </li>
+        </ul>
+    </div>
+    <!-- <preview v-if="savedAndShow"/> -->
+    
 </div>
 
 
@@ -200,10 +265,11 @@ export default {
     flex-wrap: wrap;
     
     .formBox{
-        width: 60vw;
+        width: 50vw;
         height: 80vh;
-        margin: auto;
+        // margin: auto;
         position: relative;
+        scale:0.9;
         form{
             height: 90%;
             margin:20px;
@@ -395,6 +461,14 @@ export default {
             position: absolute;
             bottom: 0;
             right: 0;
+        }
+    }
+    .rightnowSee{
+        margin-left: 5vw;
+        width:40vw;
+        // height: 80vh;
+        ul{
+            list-style: none;
         }
     }
 }

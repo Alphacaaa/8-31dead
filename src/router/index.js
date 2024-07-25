@@ -57,6 +57,11 @@ const router = createRouter({
           link:'/SetContent'
         }]
       }
+    },
+    {
+      path:'/preview',
+      name:'preview',
+      component:() => import('../views/preview.vue'),
     }
   ]
 })

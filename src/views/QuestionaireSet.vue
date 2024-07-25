@@ -8,6 +8,7 @@ import 'flatpickr/dist/flatpickr.css';
 export default {
     data(){
         return{
+            // sessionQuestionnaire: JSON.parse(sessionStorage.getItem('sessionQuestionnaire')) || [],
             questionnaire:{
                 questionName:'',
                 questionIntro:'',
@@ -31,9 +32,15 @@ export default {
     },
     methods:{
         goNextAndSave(){
-            sessionStorage.setItem('questionnaire', JSON.stringify(this.questionnaire));
-            console.log(" sessionStorage saved");
-            this.$router.push('/SetContent')
+            if (this.questionnaire.questionName == "") {
+                alert("請填寫問卷主題")
+                this.$router.push('/QuestionaireSet')
+                console.log("no")
+            }else if(this.questionnaire !== undefined){
+                sessionStorage.setItem('questionnaire',JSON.stringify(this.questionnaire));
+                this.$router.push('/SetContent')
+                console.log(" sessionStorage saved");
+            }
         }
     },
     components: {
@@ -81,7 +88,7 @@ export default {
 
 <style scoped lang="scss">
 *{
-    border:1px solid black;
+    // border:1px solid black;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -94,6 +101,7 @@ export default {
 .Main{
     width: 100vw;
     height: 85vh;
+    
     // display: flex;
     // flex-wrap: wrap;
     .formBox{
@@ -101,29 +109,34 @@ export default {
         height: 70vh;
         margin: auto;
         position: relative;
+        // background-image: url('../public/paper-texture.jpg');
+        // box-shadow:4px 4px ;
         form{
             margin:20px;
             // display: flex;
-            align-items: center;
+            // align-items: center;
             label{
             font-size: 36px;
             }
             .introLabel{
                 height: 300px;
+                line-height: 300px;
+                vertical-align: top;
             }
             input{
                 width: 70%;
                 font-size: 24px;
-                // height: 100%;
+                // height: 300px;
                 margin-left: 20px;
             }
             .intro{
                 height: 300px;
+                margin-left: 20px;
             }
         }
         .timeBox{
-            margin: 20px;
-            width: 90%;
+            margin: 0px;
+            width: 30%;
             height: 10%;
             label{
                 font-size: 36px;
@@ -142,3 +155,4 @@ export default {
 
 
 </style>
+
