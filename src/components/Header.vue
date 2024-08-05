@@ -16,7 +16,7 @@ export default {
     <div class="header">
         <div class="Homediv">
             <RouterLink  to="/">
-                <a href="javascript: void(0)" class="btn">
+                <a href="javascript: void(0)" class="HeaderBtn">
                     首頁
                     <span></span>
                     <span></span>
@@ -27,7 +27,7 @@ export default {
         </div>
         <div class="build">
             <RouterLink  to="/CreateQmanage">
-                <a href="javascript: void(0)" class="btn">
+                <a href="javascript: void(0)" class="HeaderBtn">
                     我的問卷
                     <span></span>
                     <span></span>
@@ -78,13 +78,13 @@ export default {
         }
     }
 
-    .btn,
-        .btn:focus,
-        .btn:hover {
+    .HeaderBtn,
+        .HeaderBtn:focus,
+        .HeaderBtn:hover {
                     position: relative;
                     min-width: 200px;
                     border: 1px solid #FFFFFF;
-                    color: #FFFFFF;
+                    color: #ffffff;
                     font-size: 1rem;
                     font-weight: bold;
                     text-align: center;
@@ -93,48 +93,48 @@ export default {
                     -webkit-font-smoothing: antialiased;
                     padding: 10px 20px;
                 }
-        .btn span:nth-child(1),
-        .btn span:nth-child(2),
-        .btn span:nth-child(3),
-        .btn span:nth-child(4) {
+        .HeaderBtn span:nth-child(1),
+        .HeaderBtn span:nth-child(2),
+        .HeaderBtn span:nth-child(3),
+        .HeaderBtn span:nth-child(4) {
                     content: "";
                     display: block;
                     position: absolute;
-                    background-color: #FFFFFF;
+                    background-color: #000000;
             }
-        .btn span:nth-child(1) {
+        .HeaderBtn span:nth-child(1) {
                     width: 1px;
                     left: 0;
                     bottom: 0;
         }
-        .btn span:nth-child(2) {
+        .HeaderBtn span:nth-child(2) {
                     height: 1px;
                     left: 0;
                     top: 0;
         }
-        .btn span:nth-child(3) {
+        .HeaderBtn span:nth-child(3) {
                     width: 1px;
                     right: 0;
                     top: 0;
         }
-        .btn span:nth-child(4) {
+        .HeaderBtn span:nth-child(4) {
                     height: 1px;
                     right: 0;
                     bottom: 0;
         }
-        .btn:hover {
+        .HeaderBtn:hover {
                     border: none;
         }
-        .btn:hover span:nth-child(1) {
+        .HeaderBtn:hover span:nth-child(1) {
                     animation: move1 1500ms infinite ease;
         }
-        .btn:hover span:nth-child(2) {
+        .HeaderBtn:hover span:nth-child(2) {
                     animation: move2 1500ms infinite ease;
         }
-        .btn:hover span:nth-child(3) {
+        .HeaderBtn:hover span:nth-child(3) {
                     animation: move3 1500ms infinite ease;
         }
-        .btn:hover span:nth-child(4) {
+        .HeaderBtn:hover span:nth-child(4) {
                     animation: move4 1500ms infinite ease;
         }
         @keyframes move1 {

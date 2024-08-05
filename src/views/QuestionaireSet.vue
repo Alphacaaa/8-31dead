@@ -23,25 +23,56 @@ export default {
                 filteredOptions:[],
             },
             settingShow: true,
-            selectedDate: null,
+            selectedDate1: null,
+            selectedDate2: null,
             flatpickrOptions: {
                 dateFormat: 'Y-m-d', 
                 minDate:'today',
+                defaultDate:this.calculateMinDateStart()
+            },
+            flatpickrOptions2: {
+                dateFormat: 'Y-m-d', 
+                defaultDate:this.calculateMinDateEnd()
             }
         }
     },
+    created(){
+        this.clearSessionData()
+        
+    },
+    mounted(){
+        this.flatpickrOptions.minDate = this.calculateMinDateStart()
+    },
     methods:{
+        calculateMinDateStart() {
+            const now = new Date()
+            now.setDate(now.getDate() + 2)
+            return now.toISOString().split('T')[0]
+            },
+        calculateMinDateEnd() {
+            const now = new Date()
+            
+            now.setDate(now.getDate() + 7)
+            return now.toISOString().split('T')[0]
+            },
         goNextAndSave(){
             if (this.questionnaire.questionName == "") {
                 alert("請填寫問卷主題")
                 this.$router.push('/QuestionaireSet')
                 console.log("no")
             }else if(this.questionnaire !== undefined){
+                console.log(this.questionnaire)
                 sessionStorage.setItem('questionnaire',JSON.stringify(this.questionnaire));
                 this.$router.push('/SetContent')
-                console.log(" sessionStorage saved");
+                console.log("sessionStorage saved");
             }
+        },
+        clearSessionData(){
+            sessionStorage.removeItem('sessionQuestionnaire')
+            sessionStorage.removeItem('questionnaire')
+            console.log("清除session")
         }
+        
     },
     components: {
         RouterLink,
@@ -56,18 +87,22 @@ export default {
 
 <template>
 <Header />
-<breadCrum />
+<!-- <breadCrum /> -->
 
 <div class="Main">
+    <breadCrum />
     <div class="formBox">
         <form action="" @submit.prevent>
             <div class="questionName">
                 <label for="">問卷名稱:</label>
-                <input v-model="questionnaire.questionName" type="text">
+                <input v-model="questionnaire.questionName" type="text" placeholder="設定問卷名稱">
             </div>
             <div class="questionIntro">
-                <label class="introLabel" for="intro" >問卷說明:</label>
-                <input v-model="questionnaire.questionIntro" class="intro" type="text"  id="intro">
+                <div class="introDiv">
+                    <span class="introLabel" for="intro" >問卷說明:</span>
+                </div>
+                
+                <textarea v-model="questionnaire.questionIntro" class="intro"  id="intro" ></textarea>
             </div>
             <div class="timeBox">
                 <label for=""><b>開始時間:</b></label>
@@ -75,17 +110,26 @@ export default {
             </div>
             <div class="timeBox">
                 <label for=""><b>結束時間:</b></label>
-                <flat-pickr  class="timePicker" v-model="questionnaire.endTime" :config="flatpickrOptions"></flat-pickr>
+                <flat-pickr  class="timePicker" v-model="questionnaire.endTime" :config="flatpickrOptions2"></flat-pickr>
             </div>
-            <button class="btn" type="submit" @click="goNextAndSave()">
+<!-- 
+            <a href="javascript: void(0)" class="createQsetBtn" @click="goNextAndSave()">
+            下一步
+            </a> -->
+            <div class="buttonContainer">
+                <button type="button" class="rotatingButton" @click="goNextAndSave()">下一步</button>
+                <div class="rotatingBall"></div>
+            </div>
+            <!-- <button class="btn" type="submit" @click="goNextAndSave()">
                 下一步
                 <span></span>
                 <span></span>
                 <span></span>
                 <span></span>
-            </button>
+            </button> -->
         </form>
     </div>
+
 </div>
 
 
@@ -104,53 +148,73 @@ export default {
     // display: flex;
     // flex-wrap: wrap;
 }
+
 .Main{
     width: 100vw;
     height: 85vh;
-    background-color: #e3dede;
-    // display: flex;
-    // flex-wrap: wrap;
+    background-color: #ffffff;
+    display: flex;
+    flex-wrap: wrap;
     .formBox{
-        width: 60vw;
-        height: 70vh;
-        margin: auto;
+        width: 60%;
+        height: 100%;
+        margin:  auto;
         position: relative;
         // background-image: url('../public/paper-texture.jpg');
         // box-shadow:4px 4px ;
         form{
-            margin:20px;
-            // display: flex;
-            // align-items: center;
+            // width: 80vw;
+            height: 100%;
+            padding: 50px;
+            margin: auto;
+            // text-align: center;
+            // margin-top: 20px;
             label{
             font-size: 24px;
+            // color: white;
             }
-            .introLabel{
-                height: 300px;
-                line-height: 300px;
-                vertical-align: top;
+            .questionIntro{
+                margin-top: 40px;
+                height: 200px;
+                display: flex;
             }
             input{
-                width: 70%;
+                width: 620px;
                 font-size: 24px;
                 // height: 300px;
                 margin-left: 20px;
+                border-radius: 28px;
+                padding-left: 10px;
+                // background-color: #a3a1a1;
+            }
+            span{
+                // margin-top: 10px;
+                font-size: 24px;
             }
             .intro{
-                height: 300px;
+                height: 150px;
+                width: 620px;
+                // line-height: normal;
+                // padding-bottom: 100px;
+                padding-left: 10px;
+                padding-top: 10px;
                 margin-left: 20px;
-                margin-top: 50px;
+                border-radius: 28px;
+                // margin-top: 50px;
             }
-        }
+        
         .timeBox{
-            margin: 0px;
-            width: 30%;
-            height: 10%;
+            margin-top: 20px;
+            width: 35%;
+            height: 20%;
             label{
                 font-size: 24px;
+                margin-bottom: 10px;
             }
             .timePicker{
                 margin-left:20px;
-                background-color: #8b8687;
+                width: 200px;
+                background-color: #e6e6e6;
             }
         }
         button{
@@ -158,89 +222,100 @@ export default {
             right: 5%;
             bottom: 5%;
         }
-    }
-}
-
-.btn,
-.btn:focus,
-.btn:hover {
-    position: relative;
-    min-width: 200px;
-    border: 1px solid #000000;
-    color: #000000;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    -webkit-font-smoothing: antialiased;
-    padding: 10px 20px;
-}
-.btn span:nth-child(1),
-.btn span:nth-child(2),
-.btn span:nth-child(3),
-.btn span:nth-child(4) {
-                    content: "";
-                    display: block;
+        .buttonContainer {
+            position: relative;
+            width: 100%;
+            display: inline-block;
+            .rotatingButton {
+                position: relative;
+                // right: ;
+                background-color: #000000;
+                border: none;
+                border-radius: 5%;
+                color: white;
+                font-size: 16px;
+                padding: 20px 40px;
+                text-align: center;
+                margin-left: 900px;
+                z-index: 1;
+                // box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+                }
+                .rotatingBall {
                     position: absolute;
-                    background-color: #000000;
-}
-.btn span:nth-child(1) {
-                    width: 1px;
-                    left: 0;
-                    bottom: 0;
-}
-.btn span:nth-child(2) {
-                    height: 1px;
-                    left: 0;
-                    top: 0;
-}
-.btn span:nth-child(3) {
-                    width: 1px;
-                    right: 0;
-                    top: 0;
-}
-.btn span:nth-child(4) {
-                    height: 1px;
-                    right: 0;
-                    bottom: 0;
-}
-.btn:hover {
-                    border: none;
-}
-.btn:hover span:nth-child(1) {
-    animation: move1 1500ms infinite ease;
-}
-.btn:hover span:nth-child(2) {
-                    animation: move2 1500ms infinite ease;
-}
-.btn:hover span:nth-child(3) {
-                    animation: move3 1500ms infinite ease;
-}
-.btn:hover span:nth-child(4) {
-                    animation: move4 1500ms infinite ease;
-}
-@keyframes move1 {
-                    0% { height: 100%; bottom: 0; }
-                    54% { height: 0; bottom: 100%; }
-                    55% { height: 0; bottom: 0; }
-                    100% { height: 100%; bottom: 0; }
-}
-@keyframes move2 {
-                    0% { width: 0; left: 0; }
-                    50% { width: 100%; left: 0; }
-                    100% { width: 0; left: 100%; }
-}
-@keyframes move3 {
-                    0% { height: 100%; top: 0; }
-                    54% { height: 0; top: 100%; }
-                    55% { height: 0; top: 0; }
-                    100% { height: 100%; top: 0; }
-}
-@keyframes move4 {
-                    0% { width: 0; right: 0; }
-                    55% { width: 100%; right: 0; }
-                    100% { width: 0; right: 100%; }
-}
+                    width: 20px;
+                    height: 20px;
+                    background-color: #979797;
+                    border-radius: 50%;
+                    top: 50%;
+                    left: 88%;
+                    transform: translate(-50%, -50%);
+                    animation: rotate 5s linear infinite;
+                    }
+
+                @keyframes rotate {
+                    0% {
+                        transform: translate(-50%, -50%) translateX(90px) translateY(-40px) rotate(0deg);
+                    }
+                    25% {
+                        transform: translate(-50%, -50%) translateX(90px) translateY(40px) rotate(90deg);
+                    }
+                    50% {
+                        transform: translate(-50%, -50%) translateX(-90px) translateY(40px) rotate(180deg);
+                    }
+                    75% {
+                        transform: translate(-50%, -50%) translateX(-90px) translateY(-40px) rotate(270deg);
+                    }
+                    100% {
+                        transform: translate(-50%, -50%) translateX(90px) translateY(-40px) rotate(360deg);
+                    }
+                    }
+            }
+            }
+        }
+    }
+
+// .createQsetBtn,
+// .createQsetBtn:focus {
+//     position: relative;
+//     min-width: 200px;
+//     background-color: black;
+//     border-radius: 4em;
+//     color: white;
+//     font-size: 1rem;
+//     font-weight: bold;
+//     text-align: center;
+//     text-decoration: none;
+//     text-transform: uppercase;
+//     transition-duration: 0.4s;
+//     padding: 10px 20px;
+//     margin-left: 600px;
+//     margin-top: 20px;
+// }
+// .createQsetBtn:hover {
+//     background-color: #3A3A3A;
+//     color: white;
+//     transition-duration: 0.1s;
+// }
+// .createQsetBtn:after {
+//     content: "";
+//     display: block;
+//     position: absolute;
+//     left: 0;
+//     top:0;
+//     width: 100%;
+//     height: 100%;
+//     opacity: 0;
+//     transition: all 0.5s;
+//     box-shadow: 0 0 10px 40px white;
+//     border-radius: 4em;
+// }
+// .createQsetBtn:active:after {
+//     opacity: 1;
+//     transition: 0s;
+//     box-shadow: 0 0 0 0 white;
+// }
+// .createQsetBtn:active {
+//     top: 1px;
+// }
 </style>
 

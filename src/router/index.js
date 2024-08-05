@@ -33,7 +33,7 @@ const router = createRouter({
           link:"/CreateQmanage",
         },
         {
-          name:"問卷主題",
+          name:"建立問卷主題",
           // link:'/QuestionaireSet'
           
         }]
@@ -49,7 +49,7 @@ const router = createRouter({
           link:"/CreateQmanage",
         },
         {
-          name:"問卷主題",
+          name:"建立問卷主題",
           link:'/QuestionaireSet'
         },
         {

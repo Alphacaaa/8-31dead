@@ -4,34 +4,49 @@ import Header from '../components/Header.vue'
 import list from '../components/HomePageList.vue'
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
+import scroll from '../components/scroll.vue'
+import { generate } from '@vue/compiler-core';
+import { bisectRight, color } from 'd3';
+import { h } from 'vue';
 export default{
   data() {
     return {
-      users: [
-        { id: 1, name: '', age:  '',path:'前往'},
-        { id: 2, name: '', age:  '',path:'前往'},
-        { id: 3, name: '', age:  '',path:'前往'},
-        { id: 4, name: '', age:  '',path:'前往'},
-        { id: 5, name: '', age:  '',path:'前往'},
-        { id: 6, name: '', age:  '',path:'前往'},
-        { id: 7, name: '', age:  '',path:'前往'},
-        { id: 8, name: '', age:  '',path:'前往'},
-        { id: 9, name: '', age:  '',path:'前往'},
-        { id: 10, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-        { id: 11, name: '', age:  '',path:'前往'},
-      ],
+      maxBlocks: 10,
+      blocks:[],
+      // users: [
+      //   { id: 1, name: '', age:  '',path:'前往'},
+      //   { id: 2, name: '', age:  '',path:'前往'},
+      //   { id: 3, name: '', age:  '',path:'前往'},
+      //   { id: 4, name: '', age:  '',path:'前往'},
+      //   { id: 5, name: '', age:  '',path:'前往'},
+      //   { id: 6, name: '', age:  '',path:'前往'},
+      //   { id: 7, name: '', age:  '',path:'前往'},
+      //   { id: 8, name: '', age:  '',path:'前往'},
+      //   { id: 9, name: '', age:  '',path:'前往'},
+      //   { id: 10, name: '', age:  '',path:'前往'},
+      //   { id: 11, name: '', age:  '',path:'前往'},
+      //   { id: 11, name: '', age:  '',path:'前往'},
+      //   { id: 11, name: '', age:  '',path:'前往'},
+      //   { id: 11, name: '', age:  '',path:'前往'},
+      //   { id: 11, name: '', age:  '',path:'前往'},
+      // ],
       currentPage:1,
       tablePerPage:10,
-      selectedDate: null,
+      selectedStartDate: null, 
+      selectedEndDate: null,   
       flatpickrOptions: {
         dateFormat: 'Y-m-d', // 設置日期格式
         minDate:'today'
       }
     }
+  },
+  mounted(){
+    console.log("前")
+    this.generateBlock()
+    console.log("後")
+    setInterval(() => this.generateBlock(), 100)
+    
+
   },
     computed:{
       currentPageCal(){
@@ -44,32 +59,96 @@ export default{
       }
     },
     methods:{
+      getRandomColor() {
+      const r = Math.floor(Math.random() * 256);
+      const g = Math.floor(Math.random() * 256);
+      const b = Math.floor(Math.random() * 256);
+      return `rgb(${r}, ${g}, ${b})`;
+      },
+      getRandomPosition() {
+        const viewportWidth = window.innerWidth;
+        const x = Math.random() * viewportWidth;
+        const y = -100; // Start from above the viewport
+        return { x, y };
+      },
+      generateBlock() {
+        // if (this.blocks.length >= this.maxBlocks) {
+        // this.blocks.shift();
+        // }
+        const blockWidth = 10;
+        const blockHeight = '30%';
+        const color = this.getRandomColor();
+        const { x, y } = this.getRandomPosition();
+        const duration = Math.random() * 5 + 3;
+        const newBlock = {
+          style: {
+            position: 'absolute',
+            width: `${blockWidth}px`,
+            height: blockHeight,
+            backgroundColor: color,
+            left: `${x}px`,
+            top: `${y}px`,
+            animation: `slideIn ${duration}s ease-out forwards`
+          }
+        }
+        this.blocks.push(newBlock);
+        setTimeout(() => {
+          this.blocks.shift();
+        }, duration * 50000); 
+      },
       pushPage(pageNumber){
         this.currentPage = pageNumber
       },
       create(){
         this.$router.push('/QuestionaireSet')
-      }
+      },
+      scroll(){
+        window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth' // 平滑滾動
+      })
+    }
     },
+  //methods End
     components:{
         CreateQButton,
         Header,
         flatPickr,
-        list
+        list,
+        scroll
   }
 }
+
+
+
 </script>
 
 <template>
-  <Header />
-  <div class="buttonBox" @click="create()">
-    <a href="javascript: void(0)" class="btn">
-    <div>
-        <span>建立問卷</span>
-        <span>建立問卷</span>
-    </div>
-  </a>
+  <!-- <scroll /> -->
+  <!-- <Header /> -->
+  <!-- <fullPage /> -->
+  <!-- <fullPage /> -->
+  <div class="buttonBox" >  
+      <div  class="colorBlock" v-for="(block,index) in blocks"
+      :key="index"
+      :style="block.style"></div>
 
+
+      <div class="buttonDiv">
+        <a href="javascript: void(0)"  @click="scroll(2)" class="btn">
+          <div>
+              <span>問卷列表</span>
+              <span>問卷列表</span>
+          </div>
+        </a>
+        <a href="javascript: void(0)"  @click="create()" class="btn">
+          <div>
+              <span>建立問卷</span>
+              <span>建立問卷</span>
+          </div>
+        </a>
+      </div>
+    
   </div>
   <div class="FatherBox">
     <div class="topContainer">
@@ -90,8 +169,6 @@ export default{
         </div>
         <button type="button"><i class="fa-solid fa-magnifying-glass"></i>&nbsp搜尋</button>
       </div>
-
-      <!-- <button type="button">搜尋</button> -->
     </div>
     <div class="iconContainer">
       <span><b>所有問卷</b></span>
@@ -102,47 +179,10 @@ export default{
       
     </div>
     <list />
-    <!-- <div class="list">
-        <table >
-          <thead>
-            <tr>
-              <th class="checkBoxTop">&nbsp&nbsp&nbsp&nbsp</th>
-              <th >編號</th>
-              <th>名稱</th>
-              <th>狀態</th>
-              <th>開始時間</th>
-              <th>結束時間</th>
-              <th class="result"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(user,index) in currentPageCal" :key=user.id>
-              <td class="checkBox"><input type="checkbox"></td>
-              <td class="idBox">{{ user.id }}</td>
-              <td class="name">{{ user.name }}</td>
-              <td>{{ user.age }}</td>
-              <td></td>
-              <td></td>
-              <td class="pathBox">{{user.path}}</td> 
-            </tr>
-          </tbody>
-        </table>
-        <div class="pageChage">
-          <button v-for="pageNumber in totalPages" @click="pageChange()"> 
-            {{ pageNumber }}
-          </button>
-        </div>
-
-
-    </div>  -->
-  </div>
-  <!-- <div class="buttonContainer">
-    <CreateQButton />
-  </div> -->
-  
+</div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 *{
   // border: 1px solid black;
   margin: 0;
@@ -154,14 +194,49 @@ export default{
 .buttonBox{
   width: 100vw;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background-color: #ebebeb;
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  .buttonDiv{
+    position: absolute;
+    margin: auto;
+    top: 40%;
+    left: 37%;
+    // width: 40%;
+    // height: 40%;
+    transform: translate(-50,-50%);
+
+  }
+}
+.colorBlock{
+  position: absolute;
+  // width: 500px;
+  // height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  animation: slideIn 5s ease-in-out forwards
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(2000%);
+  }
+}
+
+
+
+
   .btn {
+    margin: 20px;
     position: relative;
     min-width: 200px;
-    background: #FFFFFF;
-    border: 2px solid #3AD2D0;
+    background: #ffffff;
+    border: 2px solid #000000;
     transform: translate3d(0px, 0%, 0px);
     font-size: 1rem;
     font-weight: bold;
@@ -170,6 +245,9 @@ export default{
     transition-delay: 0.6s;
     overflow: hidden;
     padding: 10px 20px;
+    // position: absolute;
+    // top:20%;
+    // left: 40%;
   }
   .btn:before,
   .btn:after {
@@ -182,12 +260,12 @@ export default{
     transition: all 0.6s ease;
   }
   .btn:before {
-    background: #3AD2D0;
+    background: #000000;
     border-radius: 50% 50% 0 0;
     transform: translateY(100%) scaleY(0.5);
   }
   .btn:after {
-    background: #FFFFFF;
+    background: #000000;
     border-radius: 0;
     transform: translateY(0) scaleY(1);
   }
@@ -210,15 +288,16 @@ export default{
     transition: transform 0.5s ease;
 }
   .btn span:first-child {
-    color: #FFFFFF;
-    transform: translateY(24px);
+    color: #ffffff;
+    transform: translateY(36px);
 }
   .btn span:last-child {
-    color: #1E0F21;
-    transform: translateY(0);
+    color: #fafafa;
+    transform: translateY(0px);
 }
   .btn:hover {
-    background: #3AD2D0;
+    // background: #e3dede;
+    background: #ffffff;
     transition: background 0.2s linear;
     transition-delay: 0.6s;
     color: #FFFFFF;
@@ -239,13 +318,13 @@ export default{
   .btn:hover span:last-child {
     transform: translateY(-32px);
 }
-}
+
 
 
 
 .FatherBox{
   width: 100vw;
-  height: 85vh;
+  height: 100vh;
   position:relative; 
   overflow: hidden;
   // background-color: #FBF6F3;
@@ -254,7 +333,7 @@ export default{
   // background-color: #D6F7F8;
   // background-color: #F2D9B3;
   // background-color: #F2D9B3;
-  // background-color: #FFF9E9;
+  background-color: #ebebeb;
   
   // background-color: rgb(212, 247, 253);
   .topContainer{
@@ -357,4 +436,6 @@ export default{
     }
   }
 }
+
+
 </style>

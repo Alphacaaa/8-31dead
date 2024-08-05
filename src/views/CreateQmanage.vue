@@ -71,36 +71,6 @@ export default{
       
     </div>
     <ManageList />
-    <!-- <div class="list">
-        <table >
-          <thead>
-            <tr>
-              <th class="checkBoxTop">&nbsp&nbsp&nbsp&nbsp</th>
-              <th >編號</th>
-              <th>名稱</th>
-              <th>狀態</th>
-              <th>開始時間</th>
-              <th>結束時間</th>
-              <th class="result"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(user,index) in users" :key=user.id>
-              <td class="checkBox"><input type="checkbox"></td>
-              <td class="idBox">{{ user.id }}</td>
-              <td class="name">{{ user.name }}</td>
-              <td>{{ user.age }}</td>
-              <td></td>
-              <td></td>
-              <td class="pathBox">{{user.path}}</td>
-
-            </tr>
-          </tbody>
-        </table>
-
-
-
-    </div> -->
     </div>
 
 </div>
@@ -125,6 +95,7 @@ export default{
   // background-color: rgb(212, 247, 253);
   display: flex;
   flex-wrap: wrap;
+  background-color: #e3dede;
   .bigBox{
     width: 85vw;
     height: 85vh;
@@ -218,13 +189,13 @@ export default{
     justify-content: space-between;
     span{
       font-size: 40px;
-      color: rgb(18, 80, 92);
+      color: #333030 ;
       
     }
     .fa-plus, .fa-trash-can{
       font-size: 40px;
       margin: 20px;
-      color: rgb(18, 80, 92);
+      color: #333030 ;
     }
   }
 }

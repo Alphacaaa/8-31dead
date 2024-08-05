@@ -128,7 +128,7 @@ data() {
         button{
             display: block;
             margin: 5px;
-            background-color: #5D6C89;
+            background-color: #333030 ;
             color: white;
             border: none;
             border-radius: 5px;
@@ -146,8 +146,8 @@ data() {
         height: 10%;
         th{
         // width: 1px;
-        background-color: #5D6C89;
-        // background-color: rgb(18, 80, 92);
+        // background-color: #5D6C89;
+        background-color: #333030 ;
         color: white;
         text-align: center;
         border-right: 2px solid white;
@@ -168,7 +168,7 @@ data() {
         font-size: 24px;
         border: 1px solid rgb(255, 255, 255);
         // background-color: #FEB06A;
-        background-color: rgb(220, 241, 245);
+        // background-color: rgb(220, 241, 245);
 
         
         }
