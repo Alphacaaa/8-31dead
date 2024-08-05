@@ -122,10 +122,12 @@ export default{
                 <div class="optionBox">
                     <div  v-for="(option,index) in question.comfirmOptions" class="option">
                         <label  v-if="question.questionType === '單選題'" for="redio">
-                            <input  name="typeRadio" id="radio" type="radio">{{ option.value}} <p></p>
+                            <input  name="typeRadio" id="radio" type="radio">
+                            <label for="radio">{{ option.value}} </label>
                         </label>
                         <label  v-if="question.questionType === '多選題'" for="checkbox">
-                            <input  name="typeCheckbox" id="checkbox "type="checkbox">{{ option.value}} <p></p>
+                            <input  name="typeCheckbox" id="checkbox "type="checkbox">
+                            <label for="checkbox">{{ option.value}}</label>
                         </label>
                     </div>
                 </div>
