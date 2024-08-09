@@ -149,8 +149,12 @@ export default{
 
 
       <div class="buttonDiv">
+        <RouterLink  to="/CreateQmanage">
+          <button class="goListRetro-button greenButton"><img src="/public/diary.png" width="25px" height="25px"></button>
+        </RouterLink>
         <button class="retro-button" @click="scroll(2)">問卷列表</button>
         <button class="retro-button" @click="create()">建立問卷</button>
+        
       </div>
     
   </div>
@@ -208,7 +212,7 @@ export default{
     position: absolute;
     margin: auto;
     top: 40%;
-    left: 37%;
+    left: 34%;
     // width: 40%;
     // height: 40%;
     transform: translate(-50,-50%);
@@ -312,8 +316,13 @@ export default{
   --color-overlay-dark: rgba(0,0,0,.2);
   --color-tab-focus: rgba(255,255,255,.15);
 }
-
-.retro-button{
+.greenButton{
+    // color: white;
+    --color-bg:#00A07D;
+    --color-bg-light:#00AF8A;
+    --color-bg-dark:#008F70;
+}
+.retro-button , .goListRetro-button{
   position:relative;
   appearance:none;
   box-sizing:border-box;
@@ -341,13 +350,12 @@ export default{
     inset .5rem .5rem .25rem var(--color-bg-light) 
   
 }
-
-.retro-button::-moz-focus-inner{
+.goListRetro-button, .retro-button::-moz-focus-inner{
   outline:none;
   border:none;
 }
 
-.retro-button:focus{
+.goListRetro-button, .retro-button:focus{
   outline:none;
   box-shadow:
     -1px -1px 1px var(--color-bg-dark), //top highlight
@@ -358,7 +366,7 @@ export default{
     ;
 }
 
-.retro-button:hover{
+.goListRetro-button, .retro-button:hover{
   box-shadow:
     -1px -1px 1px var(--color-bg-dark), //top highlight
     0 0 0 4px var(--color-overlay-dark), //outer shadow
@@ -370,12 +378,18 @@ export default{
 
 .retro-button:active{
   box-shadow:
-    inset 1px 1px 1px var(--color-bg), //top highlight   
-    0 0 0 4px var(--color-overlay-dark), //outer shadow
-    inset -1px -1px 1px var(--color-bg-light), //bottom lowlight    
-    inset .5rem .5rem .75rem var(--color-bg-dark), //inset shadow
-    inset .5rem .5rem .5rem var(--color-bg-light), //button gloss
+    inset 1px 1px 1px var(--color-bg), 
+    0 0 0 4px var(--color-overlay-dark), 
+    inset -1px -1px 1px var(--color-bg-light),   
+    inset .5rem .5rem .75rem var(--color-bg-dark), 
+    inset .5rem .5rem .5rem var(--color-bg-light), 
 }
+.goListRetro-button{
+  width: 30px;
+}
+
+
+
 
 .FatherBox{
   font-size: 'Press Start 2P';

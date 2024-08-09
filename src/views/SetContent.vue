@@ -5,8 +5,9 @@ import { RouterLink } from 'vue-router'
 import breadCrum from '../components/breadCrum.vue'
 import Header from '../components/Header.vue'
 import SetList from '../components/SetContentList.vue'
-import interact from 'interactjs'
-import sortable from 'sortablejs'
+import { useColorStore } from '@/stores/counter'
+const colorStore = useColorStore()
+const colors = colorStore.colors
 // import preview from '../components/preview.vue'
 // sessionStorage.setItem('key', JSON.stringify(questionnaire));
 // const  data = JSON.parse(sessionStorage.getItem('key'));
@@ -282,12 +283,12 @@ export default {
     <breadCrum />
     <div class="formBox">
         <!-- <button type="button" @click="backToQset()">返回</button> -->
-        <a href="javascript: void(0)" class="SetContentBtn" @click="backToQset()">
+        <!-- <a href="javascript: void(0)" class="SetContentBtn" @click="backToQset()">
             <<返回
-        </a>
+        </a> -->
         <form action=""  @submit.prevent>
             <!-- <label for=""></label> -->
-            <input type="text" v-model="questionnaire.question" :class="{'error' : showQuestionError}" placeholder="設定問題">
+            <input class="setQuestion" type="text" v-model="questionnaire.question" :class="{'error' : showQuestionError}" placeholder="設定問題">
             <p v-if="showQuestionError" class="errorMsg">請先建立問題名稱</p>
             <label for="single">
                 <input name="type" class="radio" type="radio" value="單選題" id="single" v-model="questionnaire.questionType">單選題
@@ -307,7 +308,7 @@ export default {
                     <!-- <label class="newSelection"  v-if="questionnaire.questionType === '單選題' || questionnaire.questionType === '多選題'"> -->
                         <!-- <span >新增選項</span> -->
                         <!-- <span v-if="buttonShow == true">新增選項</span> -->
-                        <button v-if="questionnaire.questionType !== '簡答題'" @click="addSelection()"><i class="fa-solid fa-plus"></i></button>
+                        <button v-if="questionnaire.questionType !== '簡答題'" @click="addSelection()" class="retro-button blueButton"><i class="fa-solid fa-plus"></i></button>
                         <p v-if="showSelectionError" class="errorMsg">選項不可為空</p>
                     </div>
                 </div>
@@ -316,17 +317,23 @@ export default {
                         <div v-for="(option,index) in questionnaire.comfirmOptions" :key="index" class="comfirmBox">
                             <span v-if="!(option.editAllow)">{{ option.value }}</span>
                             <input class="editInput" v-model="option.value" v-if="option.editAllow" @keyup.enter="saveEdited(index)" type="text" placeholder="編輯...">
-                            <button class="editComfirm" v-if="option.editAllow" @click="saveEdited(index)" ><i class="fa-solid fa-check"></i></button>
-                            <button class="edit" v-if="!(option.editAllow)" @click="editSelection(index)"><i class="fa-solid fa-pen"></i></button>
-                            <button class="remove-minus"@click="removeSelection(index)"><i class="fa-solid fa-minus"></i></button>
+                            <img src="/public/edit-button.png"  width="30px" height="30px" @click="editSelection(index)" class="edit" v-if="!(option.editAllow)" >
+                            <img @click="saveEdited(index)" v-if="option.editAllow" class="editComfirm" src="/public/pixelated.png" width="30px" height="30px" alt="">
+                            <img @click="removeSelection(index)" class="remove-minus" src="/public/close.png" width="30px" height="30px" alt="">
+
+                            <!-- <button class="editComfirm" v-if="option.editAllow" @click="saveEdited(index)" ><i class="fa-solid fa-check"></i></button> -->
+                            <!-- <button class="edit" v-if="!(option.editAllow)" @click="editSelection(index)"><i class="fa-solid fa-pen"></i></button> -->
+                            <!-- <button class="remove-minus"@click="removeSelection(index)"><i class="fa-solid fa-minus"></i></button> -->
                         </div>
                 </div>
                 <transition-group v-if = "questionnaire.questionType === '單選題' || questionnaire.questionType === '多選題'" name="anime" tag="div" class="selectionAdd"  >
-                    <label  v-for="(option,index) in questionnaire.options" :key="index">
+                    <div class="selectionAddInputDiv" v-for="(option,index) in questionnaire.options" :key="index">
                         <input v-if="optionsShow" type="text" v-model="questionnaire.options[index].value" placeholder="輸入選項">
-                        <button class="comfirmss" @click="comfirm()"><i class="fa-solid fa-check-to-slot"></i></button>
-                        <button class="remove" @click="cancelSelection(index)"><i class="fa-solid fa-xmark"></i></button>
-                    </label>
+                        <!-- <button class="comfirmss" @click="comfirm()"><i class="fa-solid fa-check-to-slot"></i></button> -->
+                        <img @click="comfirm()" class="pixelComfirm" src="/public/pixelated.png" width="30px" height="30px" alt="">
+                        <img @click="cancelSelection(index)" class="pixelRemove" src="/public/close.png" width="30px" height="30px" alt="">
+                        <!-- <button class="remove" @click="cancelSelection(index)"><i class="fa-solid fa-xmark"></i></button> -->
+                    </div>
                 </transition-group>
                 <!-- <transition-group name="anime" tag="div" class="comfirmList" v-if="comfirmOptions.length > 0 && questionType"> -->
                 
@@ -334,18 +341,10 @@ export default {
                 
             </div>
         <!-- <button type="submit" @click="submitForm()">加入</button> -->
-        <div class="buttonDiv">
-            
-            <!-- <button type="button" @click="clear()">清空</button> -->
-            <!-- <button type="button" @click="backToQset()">返回</button> -->
-            <a href="javascript: void(0)" class="SetContentBtn" @click="submitForm()">
-                加入>>
-            </a>
-        </div>
-        <!-- <div class="buttonGroup">
-            <button type="button" @click="preview()">預覽</button>
-            <button type="button" @click="clear()">清空</button>
-            <button type="button" @click="backToQset()">返回</button>
+        <!-- <div class="buttonDiv">
+            <button @click="backToQset()" class="backButton" type="button"> << BACK</button>
+            <button @click="submitForm()" class="submitButton" type="button">SUBMIT</button>
+            <button @click="preview()" class="previewButton" type="button">PREVIEW>> </button>
         </div> -->
         
         </form>
@@ -354,8 +353,11 @@ export default {
         <div class="title">
             <p>{{ this.questionnaire.questionName}}</p>
             <!-- <p>{{ this.questionnaire.questionIntro}}</p> -->
-            <p>{{ this.questionnaire.startTime}}</p>
-            <p>{{ this.questionnaire.endTime}}</p>
+            <div class="timeDiv">
+                <p>{{ this.questionnaire.startTime}}</p>
+                <p>{{ this.questionnaire.endTime}}</p>
+            </div>
+            
         </div>
         <div class="content" ref="sortableContainer" >
             <p v-for="(question,index) in forPreview" :key="index" >
@@ -368,20 +370,19 @@ export default {
                     <p class="necessaryP" v-if="question.necessary == true">*</p>
                 </div>
                 <!-- <p class="type">{{ question.questionType }}</p> -->
-                
-                <button @click="editQuestion(index)" class="previewEdit"><i class="fa-solid fa-pen"></i></button>
-                <button @click="removePreviewQuestion(index)" class="previewEditMinus"><i class="fa-solid fa-minus"></i></button>
+                <img src="/public/edit-button.png" width="30px" height="30px" @click="editQuestion(index)" class="previewEdit">
+                <!-- <button @click="editQuestion(index)" class="previewEdit"><i class="fa-solid fa-pen"></i></button> -->
+                <img src="/public/close.png" width="30px" height="30px" @click="removePreviewQuestion(index)" class="previewEditMinus">
+                <!-- <button @click="removePreviewQuestion(index)" class="previewEditMinus"><i class="fa-solid fa-minus"></i></button> -->
             </p>
             <!-- <p v-if="placeholderIndex !== null" class="placeholder" :style="{ height: itemHeight + 'px' }"></p> -->
         </div>
-        
-        <!-- <button type="button" @click="preview()">預覽</button> -->
-        <a href="javascript: void(0)" class="btn-68" @click="preview()">
-            預覽
-        </a>
+        <div class="buttonDiv">
+            <button @click="backToQset()" class="backButton" type="button"> << BACK</button>
+            <button @click="submitForm()" class="submitButton" type="button">SUBMIT</button>
+            <button @click="preview()" class="previewButton" type="button">PREVIEW>> </button>
+        </div>
     </div>
-    <!-- <preview v-if="savedAndShow"/> -->
-    
 </div>
 
 
@@ -394,6 +395,7 @@ export default {
     margin: 0;
     padding: 0;
     font-size: 24px;
+    // font-family: 'Noto Sans Mono', monospace;
     // display: flex;
     // flex-wrap: wrap;
 }
@@ -407,7 +409,7 @@ body{
     height: 50px; 
 }
 .Main{
-    background-color: #e3dede;
+    background-color:#B9B5AA;
     width: 100vw;
     height: 85vh;
     display: flex;
@@ -427,24 +429,33 @@ body{
             align-items: center;
             position: relative;
             label{
+                width: 100px;
                 margin-top:20px ;
                 font-size: 24px;
             }
             .introLabel{
                 height: 200px;
             }
-            input{
-                width: 90%;
-                font-size: 24px;
-                // height: 100%;
-                margin-left: 20px;
-                // margin-bottom: 20px;
-                // line-height: 200px;
+            .setQuestion{
+                // width: 90%;
+                // font-size: 24px;
+                // margin-left: 20px;
                 
+                box-shadow: 0 0 0 2px var(--color-page-bg) inset;
+                text-shadow: 1px 1px 0 #000;
+                width: 90%;
+                font-size: 36px;
+                // margin-left: 20px;
+                border-radius: 5px;
+                padding-left: 10px;
+                background-color: rgba(255, 255, 255, .2);
             }
             .radio{
-                width: 10%;
+                width: 20%;
+                height: 20px;
             }
+            
+            
             .checkBox{
                 width: 20px;
                 margin-left: 10px;
@@ -474,18 +485,12 @@ body{
                     margin-left: 20px;
                     font-size: 24px;
                 }
-                button{
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 50%;
-                        z-index: 99;
-                        // background-color: rgb(167, 167, 167);
-                        background-color: rgb(0, 0, 0);
-                        border: none;
-                        // position: fixed;
-                        &:hover{
-                            background-color: rgb(75, 74, 74);
-                    }
+                .blueButton{
+                    width: 10px;
+                    --color-bg:#0066B4;
+                    --color-bg-light:#3981CA;
+                    --color-bg-dark:#004EAD;
+                }
                 }
                     }
                 .fa-plus{
@@ -497,10 +502,12 @@ body{
                 width: 100%;
                 height: 80%;
                 position: relative;
+                overflow-y: auto;
                 // display: flex;
                 // height: 70%;
                 .comfirmList{
-                    width: 100%;
+                    width: 90%;
+                    background-color: '#7D878F';
                     // height: 70%;
                     // margin-top: 20px;
                     // border-radius:10px;
@@ -508,43 +515,54 @@ body{
                     top:100%;
                     .comfirmBox{
                         border: none;
-                        border-bottom: 1px solid black;
+                        // border-bottom: 1px solid black;
+                        display: flex;
+                        // justify-content: center;
+                        align-items: center;
+                        background-color: #7D878F;
                         margin-top: 20px;
                         width: 100%;
-                        height: 50px;
+                        height: 40px;
                         position: relative;
+                        border-radius: 5px;
                         .editInput{
-                            width: 80%;
-                            background-color: #e3dede;
+
+                            background-color: #7D878F;
                             outline: none;
-                            border: none;
-                            border-bottom: 1px solid black;
+                            // border: none;
+                            // border-bottom: 1px solid black;
+                            box-shadow: 0 0 0 2px var(--color-page-bg) inset;
+                            text-shadow: 1px 1px 0 #000;
+                            width: 79%;
+                            font-size: 24px;
+                            // margin-left: 20px;
+                            border-radius: 5px;
+                            padding-left: 10px;
+                            background-color: rgba(255, 255, 255, .2);
                         }
+                        
                         .editComfirm{
-                            width: 35px;
-                            height: 35px;
-                            border-radius: 50%;
-                            // background-color: rgb(167, 167, 167);
-                            background-color: #e3dede;
+                            width: 30px;
+                            height: 30px;
                             border: none;
-                            position: absolute;
-                            right: 7%;
+                            margin-left: 33px;
+                            // position: absolute;
+                            // right: 15%;
                             &:hover{
-                                background-color: rgb(167, 167, 167);
+                                cursor: pointer;
+                                scale: 1.1;
                             }
                         }
-                        // .fa-check
                         .remove-minus{
-                            width: 35px;
-                            height: 35px;
-                            border-radius: 50%;
-                            // background-color: rgb(167, 167, 167);
-                            background-color: #e3dede;
+                            width: 30px;
+                            height: 30px;
+                            margin-left: 20px;
                             border: none;
                             position: absolute;
-                            right: -0%;
+                            right: 3.2%;
                             &:hover{
-                                background-color: rgb(167, 167, 167);
+                                cursor: pointer;
+                                scale: 1.1;
                             }
                         }
                         }
@@ -552,24 +570,45 @@ body{
                 }
         }
             .selectionAdd{
-                display: flex;
+                // display: flex;
                 flex-wrap: wrap;
-                width: 100%;
+                // width: 500px;
                 position: relative;
                 align-items: center;
-                label{
-                    width: 100%;
+                .selectionAddInputDiv{
+                    margin-top: 20px;
+                    width: 90%;
                     display: flex;
                     align-items: center;
+                    background-color: #7D878F;
+                    border-radius: 5px;
+                    .pixelComfirm{
+                        margin-left: 40px;
+                        margin-right: 20px;
+                        &:hover{
+                            // background-color: gray;
+                            cursor: pointer;
+                            scale: 1.1;
+                        }
+                    }
+                    .pixelRemove{
+                        margin-right: 20px;
+                        &:hover{
+                            // background-color: rgb(168, 166, 166);
+                            cursor: pointer;
+                            scale: 1.1;
+                        }
+                    }
                 }
                 input{
-                    width: 80%;
-                    margin-left: 20px;
-                    border-radius: 10px;
-                    border:none;
-                    // border-bottom: 1px solid black;
-                    outline: none;
-                    padding: 5px;
+                    box-shadow: 0 0 0 2px var(--color-page-bg) inset;
+                    text-shadow: 1px 1px 0 #000;
+                    width: 90%;
+                    font-size: 24px;
+                    // margin-left: 20px;
+                    border-radius: 5px;
+                    padding-left: 10px;
+                    background-color: rgba(255, 255, 255, .2);
                 }
                 .comfirmss{
                     width: 35px;
@@ -603,36 +642,32 @@ body{
     .edit{
         width: 35px;
         height: 35px;
-        border-radius: 50%;
+        // border-radius: 50%;
         // background-color: rgb(167, 167, 167);
-        background-color: #e3dede;
+        // background-color: #e3dede;
         border: none;
         position: absolute;
-        right: 7%;
+        right: 11%;
         &:hover{
-            background-color: rgb(167, 167, 167);
+            scale:1.1;
+            cursor: pointer;
             }
         }
         span{
             margin-left: 20px;
         }
-        
-        
+
         .submit{
             position: absolute;
             bottom: 0;
             right: 0;
         }
-        .buttonDiv{
-            position: absolute;
-            bottom: 30%;
-            right: -18%;
-            z-index: 99;
-        }
+        
     }
-}
+
     .previewList{
         // border:1px solid rgb(0, 0, 0);
+        
         margin-left: 4vw;
         width:38vw;
         height: 85vh;
@@ -640,18 +675,29 @@ body{
         // z-index: -1;
         .title{
             // border:1px solid rgb(0, 0, 0);
+            font-family: 'Press Start 2P', cursive;
             width: 80%;
             margin: auto;
             text-align: center;
+
+            .timeDiv{
+                position: absolute;
+                right: 8%;
+                top: 4%;
+                p{
+                    font-size: 12px;
+                    color: white;
+                }
+            }
             p{
                 font-size: 48px;
             }
         }
         .content{
-            // border:1px solid rgb(0, 0, 0);
+            // border:5px solid #7D878F;
             width: 80%;
             height: 70%;
-            margin: 50px auto;
+            margin: 10px auto;
             overflow-wrap: break-word;
             overflow-y: auto;
             p{
@@ -662,8 +708,11 @@ body{
                 align-items: center;
                 margin: 10px auto;
                 position: relative;
-                background-color: white;
-                border-radius: 10px;
+                background-color: #7D878F;
+                color: white;
+                border: 5px solid #6e6e6e;
+                // border-radius: 10px;
+                // transition: transform .3s ease .3s;
                 .necessary{
                     // width: 60px;
                     height: 30%;
@@ -672,6 +721,7 @@ body{
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    // border: none;
                     .changeColor{
                         color: red;
                     }
@@ -682,53 +732,104 @@ body{
                         width: 100%;
                         height: 100%;
                         color: red;
+                        border: none;
                     }
                 }
                 .previewEdit{
                     width: 35px;
                     height: 35px;
-                    border-radius: 50%;
+                    // border-radius: 50%;
                     // background-color: rgb(167, 167, 167);
                     // background-color: #e3dede;
                     border: none;
                     position: absolute;
                     right: 0%;
                     margin-left: 10px;
-                    // button{
-                    //     width: 40px;
-                    //     height: 40px;
-                    //     border-radius: 50%;
-                    //     background-color: rgb(167, 167, 167);
-                    //     background-color: rgb(0, 0, 0);
-                    //     border: none;
-                    // }
                     &:hover{
-                        background-color: rgb(167, 167, 167);
+                        scale: 1.1;
+                        cursor: pointer;
+                        // background-color: rgb(167, 167, 167);
                     }
                 }
                 .previewEditMinus{
-                        width: 35px;
-                        height: 35px;
-                        border-radius: 50%;
-                        // background-color: rgb(167, 167, 167);
-                        // background-color: #e3dede;
+                        width: 30px;
+                        height: 30px;
+                        // border-radius: 50%;
                         border: none;
                         position: absolute;
                         margin-left: 10px;
                         right: 10%;
                         &:hover{
-                        background-color: rgb(167, 167, 167);
+                            scale: 1.1;
+                            cursor: pointer;
                         }
                     }
                 
             }
         }
-        .btn-68{
+            .buttonDiv{
             position: absolute;
-            right: 0;
-            bottom: 9%;
-            border-radius: 20px;
-            text-decoration: none;
+            right: -4%;
+            margin-top: 10px;
+            // margin-right:500px;
+            // border: 1px solid black;
+            width: 800px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #969DA3;
+            border-radius: 5px;
+            box-shadow: 0 10px 0px #666668;
+            z-index: 99;
+            font-family: 'Press Start 2P';
+            .backButton, .submitButton, .previewButton{
+                background-color: #FF8800;
+                color: white;
+                margin: 10px;
+                width: 200px;
+                height: 50px;
+                border-radius: 5px;
+                border: none;
+                box-shadow: 0 10px 0px rgb(151, 83, 9);
+                transition: all 0.3s ease; 
+                &:hover{
+                    box-shadow:  0 5px 0px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(4px); 
+                }
+                &:active{
+                    background-color: #e67e22; 
+                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(5px); 
+                }
+            }
+            .submitButton{
+                background-color :#0066B4;
+                box-shadow: 0 10px 0px #033257;
+                &:hover{
+                    box-shadow:  0 5px 0px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(4px); 
+                }
+                &:active{
+                    background-color: #0066B4; 
+                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(5px); 
+                }
+            }
+            .previewButton{
+                width: 240px;
+                background-color :#2dc234;
+                box-shadow: 0 10px 0px #115314;
+                &:hover{
+                    box-shadow:  0 5px 0px #115314; 
+                    transform: translateY(4px); 
+                }
+                &:active{
+                    background-color: #2dc234; 
+                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(5px); 
+                }
+            }
         }
     }
 
@@ -755,185 +856,70 @@ body{
 .anime-enter, .anime-leave-to {
     opacity: 0;
 }
-.SetContentBtn,
-.SetContentBtn,
-.SetContentBtn:focus {
-    position: relative;
-    min-width: 100px;
-    background-color: black;
-    border-radius: 4em;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    transition-duration: 0.4s;
-    padding: 10px 20px;
-}
-
-.SetContentBtn:hover {
-    background-color: #3A3A3A;
-    color: white;
-    transition-duration: 0.1s;
-}
-.SetContentBtn:after {
-    content: "";
-    display: block;
-    position: absolute;
-    left: 0;
-    top:0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: all 0.5s;
-    box-shadow: 0 0 10px 40px white;
-    border-radius: 4em;
-}
-.SetContentBtn:active:after {
-    opacity: 1;
-    transition: 0s;
-    box-shadow: 0 0 0 0 white;
-}
-.SetContentBtn:active {
-    top: 1px;
-}
 
 
 
-.btn-68,
-.btn-68 *,
-.btn-68 :after,
-.btn-68 :before,
-.btn-68:after,
-.btn-68:before {
-  border: 0 solid;
-  box-sizing: border-box;
-}
-.btn-68 {
-  -webkit-tap-highlight-color: transparent;
-  -webkit-appearance: button;
-  background-color: #000;
-  background-image: none;
-  color: #fff;
-  cursor: pointer;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
-    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-  font-size: 100%;
-  line-height: 1.5;
-  margin: 0;
-  -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
-  padding: 0;
-}
-.btn-68:disabled {
-  cursor: default;
-}
-.btn-68:-moz-focusring {
-  outline: auto;
-}
-.btn-68 svg {
-  display: block;
-  vertical-align: middle;
-}
-.btn-68 [hidden] {
-  display: none;
-}
-.btn-68 {
-  box-shadow: inset 0 0 0 2px #fff;
-  box-sizing: border-box;
-  display: block;
-  font-weight: 900;
-  padding: 1.2rem 3rem;
-  position: relative;
-  text-transform: uppercase;
-  transition: color 0.1s linear;
-}
-.btn-68:after,
-.btn-68:before {
-  content: "";
-  height: 0;
-  position: absolute;
-  width: 0;
-}
-.btn-68:before {
-  border-right: var(--border);
-  border-top: var(--border);
-  left: 0;
-  top: 0;
-}
-.btn-68:hover:before {
-  --border: 4px solid #000;
-  -webkit-animation: border-top-and-right 1s forwards;
-  animation: border-top-and-right 1s forwards;
-}
-.btn-68:after {
-  border-bottom: var(--border);
-  border-left: var(--border);
-  bottom: 0;
-  right: 0;
-  z-index: -1;
-}
-.btn-68:hover:after {
-  --border: 4px solid #000;
-  -webkit-animation: border-bottom-and-left 1s forwards;
-  animation: border-bottom-and-left 1s forwards;
-}
-@-webkit-keyframes border-top-and-right {
-  0% {
-    height: 0;
-    width: 0;
-  }
-  50% {
-    height: 0;
-    width: 100%;
-  }
-  to {
-    height: 100%;
-    width: 100%;
-  }
-}
-@keyframes border-top-and-right {
-  0% {
-    height: 0;
-    width: 0;
-  }
-  50% {
-    height: 0;
-    width: 100%;
-  }
-  to {
-    height: 100%;
-    width: 100%;
-  }
-}
-@-webkit-keyframes border-bottom-and-left {
-  0% {
-    height: 0;
-    width: 0;
-  }
-  50% {
-    height: 0;
-    width: 100%;
-  }
-  to {
-    height: 100%;
-    width: 100%;
-  }
-}
-@keyframes border-bottom-and-left {
-  0% {
-    height: 0;
-    width: 0;
-  }
-  50% {
-    height: 0;
-    width: 100%;
-  }
-  to {
-    height: 100%;
-    width: 100%;
-  }
+
+.retro-button{
+    position:relative;
+    appearance:none;
+    box-sizing:border-box;
+    font-size:calc( var(--button-height) / 3 );
+    font-family: 'Open Sans', sans-serif;
+    background: var(--color-bg);
+    height:var(--button-height);
+    // min-width:20px;
+    width: 20px;
+    border-radius:calc( var(--button-height) / 2);
+    border:0;
+    font-weight:800;
+    text-transform:uppercase;
+    color:var(--color-text);
+    text-shadow: 1px 1px var(--color-text-shadow);
+    cursor:pointer;
+    margin:6px 6px;
+    letter-spacing:.1em;
+    transition: all 200ms ease;
+    box-shadow:
+        -1px  -1px 1px var(--color-bg), 
+        0 0 0 4px var(--color-overlay-medium), 
+        1px  1px 1px var(--color-bg-dark), 
+        inset .0 .0 .0 var(--color-overlay-dark),  
+        inset .5rem .5rem .25rem var(--color-bg-light) 
 }
 
+.retro-button::-moz-focus-inner{
+    outline:none;
+    border:none;
+}
+
+.retro-button:focus{
+    outline:none;
+    box-shadow:
+    -1px -1px 1px var(--color-bg-dark),
+    0 0 0 4px var(--color-tab-focus), 
+    1px  1px 1px var(--color-bg-dark),
+    inset 0 0 0 var(--color-overlay-dark), 
+    inset .5rem .5rem .25rem var(--color-bg-light), 
+    ;
+}
+
+.retro-button:hover{
+    box-shadow:
+        -1px -1px 1px var(--color-bg-dark), 
+        0 0 0 4px var(--color-overlay-dark), 
+        1px  1px 1px var(--color-bg-dark), 
+        inset 0 0 0 var(--color-overlay-dark), 
+        inset .5rem .5rem .25rem var(--color-bg-light), 
+        ;
+    }
+
+.retro-button:active{
+    box-shadow:
+        inset 1px 1px 1px var(--color-bg),  
+        0 0 0 4px var(--color-overlay-dark), 
+        inset -1px -1px 1px var(--color-bg-light),   
+        inset .5rem .5rem .75rem var(--color-bg-dark), 
+        inset .5rem .5rem .5rem var(--color-bg-light), 
+}
 </style>

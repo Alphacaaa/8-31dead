@@ -16,24 +16,12 @@ export default {
     <div class="header">
         <div class="Homediv">
             <RouterLink  to="/">
-                <a href="javascript: void(0)" class="HeaderBtn">
-                    首頁
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </a>
+                <button class="retro-button redButton"><img src="/public/home.png" width="25px" height="25px"></button>
             </RouterLink>
         </div>
         <div class="build">
             <RouterLink  to="/CreateQmanage">
-                <a href="javascript: void(0)" class="HeaderBtn">
-                    我的問卷
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </a>
+                <button class="retro-button greenButton"><img src="/public/diary.png" width="25px" height="25px"></button>
             </RouterLink>
         </div>
     </div>
@@ -49,6 +37,19 @@ export default {
     // border: 1px solid rgb(18, 80, 92);
 }
 
+:root{
+    --button-height: 3rem;
+    --color-text: rgba(0, 0, 0, 0.25);
+    --color-text-shadow: rgb(29, 28, 28);
+    --color-page-bg:#B9B5AA;
+    --color-bg:#899095;
+    --color-bg-light:#969DA3;
+    --color-bg-dark: #7D878F;
+    --color-overlay-light: rgba(255,255,255,.2);
+    --color-overlay-medium: rgba(0,0,0,.1);
+    --color-overlay-dark: rgba(0,0,0,.2);
+    --color-tab-focus: rgba(255,255,255,.15);
+}
     .header{
         // background-color: rgb(212, 247, 253);
         // background-color: #2D4472;
@@ -66,97 +67,91 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 20%;
+            margin-left: 10%;
+            // width: 20%;
+
         }
+        
         .build{
             display: flex;
             // width:89% ;
-            margin-left: 60%;
+            // margin-left: 60%;
             height: 100%;
             justify-content: end;
             align-items: center;
         }
     }
+.redButton{
+    --color-bg:#E44E55;
+    --color-bg-light:#E47479;
+    --color-bg-dark:#D13239;
+}
+.greenButton{
+    // color: white;
+    --color-bg:#00A07D;
+    --color-bg-light:#00AF8A;
+    --color-bg-dark:#008F70;
+}
+    .retro-button{
+    position:relative;
+    appearance:none;
+    box-sizing:border-box;
+    font-size:calc( var(--button-height) / 3 );
+    font-family: 'Open Sans', sans-serif;
+    background: var(--color-bg);
+    height:var(--button-height);
+    min-width:50px;
+    width: 50px;
+    border-radius:calc( var(--button-height) / 2);
+    border:0;
+    font-weight:800;
+    text-transform:uppercase;
+    color:var(--color-text);
+    text-shadow: 1px 1px var(--color-text-shadow);
+    cursor:pointer;
+    margin:6px 6px;
+    letter-spacing:.1em;
+    transition: all 200ms ease;
+    box-shadow:
+        -1px  -1px 1px var(--color-bg), 
+        0 0 0 4px var(--color-overlay-medium), 
+        1px  1px 1px var(--color-bg-dark), 
+        inset .0 .0 .0 var(--color-overlay-dark),  
+        inset .5rem .5rem .25rem var(--color-bg-light) 
+}
 
-    .HeaderBtn,
-        .HeaderBtn:focus,
-        .HeaderBtn:hover {
-                    position: relative;
-                    min-width: 200px;
-                    border: 1px solid #FFFFFF;
-                    color: #ffffff;
-                    font-size: 1rem;
-                    font-weight: bold;
-                    text-align: center;
-                    text-decoration: none;
-                    text-transform: uppercase;
-                    -webkit-font-smoothing: antialiased;
-                    padding: 10px 20px;
-                }
-        .HeaderBtn span:nth-child(1),
-        .HeaderBtn span:nth-child(2),
-        .HeaderBtn span:nth-child(3),
-        .HeaderBtn span:nth-child(4) {
-                    content: "";
-                    display: block;
-                    position: absolute;
-                    background-color: #000000;
-            }
-        .HeaderBtn span:nth-child(1) {
-                    width: 1px;
-                    left: 0;
-                    bottom: 0;
-        }
-        .HeaderBtn span:nth-child(2) {
-                    height: 1px;
-                    left: 0;
-                    top: 0;
-        }
-        .HeaderBtn span:nth-child(3) {
-                    width: 1px;
-                    right: 0;
-                    top: 0;
-        }
-        .HeaderBtn span:nth-child(4) {
-                    height: 1px;
-                    right: 0;
-                    bottom: 0;
-        }
-        .HeaderBtn:hover {
-                    border: none;
-        }
-        .HeaderBtn:hover span:nth-child(1) {
-                    animation: move1 1500ms infinite ease;
-        }
-        .HeaderBtn:hover span:nth-child(2) {
-                    animation: move2 1500ms infinite ease;
-        }
-        .HeaderBtn:hover span:nth-child(3) {
-                    animation: move3 1500ms infinite ease;
-        }
-        .HeaderBtn:hover span:nth-child(4) {
-                    animation: move4 1500ms infinite ease;
-        }
-        @keyframes move1 {
-                    0% { height: 100%; bottom: 0; }
-                    54% { height: 0; bottom: 100%; }
-                    55% { height: 0; bottom: 0; }
-                    100% { height: 100%; bottom: 0; }
-        }
-        @keyframes move2 {
-                    0% { width: 0; left: 0; }
-                    50% { width: 100%; left: 0; }
-                    100% { width: 0; left: 100%; }
-        }
-        @keyframes move3 {
-                    0% { height: 100%; top: 0; }
-                    54% { height: 0; top: 100%; }
-                    55% { height: 0; top: 0; }
-                    100% { height: 100%; top: 0; }
-        }
-        @keyframes move4 {
-                    0% { width: 0; right: 0; }
-                    55% { width: 100%; right: 0; }
-                    100% { width: 0; right: 100%; }
-        }
+.retro-button::-moz-focus-inner{
+    outline:none;
+    border:none;
+}
+
+.retro-button:focus{
+    outline:none;
+    box-shadow:
+    -1px -1px 1px var(--color-bg-dark),
+    0 0 0 4px var(--color-tab-focus), 
+    1px  1px 1px var(--color-bg-dark),
+    inset 0 0 0 var(--color-overlay-dark), 
+    inset .5rem .5rem .25rem var(--color-bg-light), 
+    ;
+}
+
+.retro-button:hover{
+    box-shadow:
+        -1px -1px 1px var(--color-bg-dark), 
+        0 0 0 4px var(--color-overlay-dark), 
+        1px  1px 1px var(--color-bg-dark), 
+        inset 0 0 0 var(--color-overlay-dark), 
+        inset .5rem .5rem .25rem var(--color-bg-light), 
+        ;
+    }
+
+.retro-button:active{
+    box-shadow:
+        inset 1px 1px 1px var(--color-bg),  
+        0 0 0 4px var(--color-overlay-dark), 
+        inset -1px -1px 1px var(--color-bg-light),   
+        inset .5rem .5rem .75rem var(--color-bg-dark), 
+        inset .5rem .5rem .5rem var(--color-bg-light), 
+}
 </style>

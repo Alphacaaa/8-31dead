@@ -3,8 +3,11 @@ import { RouterLink } from 'vue-router'
 import QuestionaireSetFirst from '../components/HomePageList.vue'
 import breadCrum from '../components/breadCrum.vue'
 import Header from '../components/Header.vue'
-import flatPickr from 'vue-flatpickr-component';
-import 'flatpickr/dist/flatpickr.css';
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
+import { useColorStore } from '@/stores/counter'
+const colorStore = useColorStore()
+const colors = colorStore.colors
 export default {
     data(){
         return{
@@ -90,16 +93,16 @@ export default {
 <!-- <breadCrum /> -->
 
 <div class="Main">
-    <breadCrum />
+    <!-- <breadCrum /> -->
     <div class="formBox">
         <form action="" @submit.prevent>
             <div class="questionName">
-                <label for="">問卷名稱:</label>
+                <label for=""><b>問卷名稱:</b></label>
                 <input v-model="questionnaire.questionName" type="text" placeholder="設定問卷名稱">
             </div>
             <div class="questionIntro">
                 <div class="introDiv">
-                    <span class="introLabel" for="intro" >問卷說明:</span>
+                    <span class="introLabel" for="intro" ><b>問卷說明:</b></span>
                 </div>
                 
                 <textarea v-model="questionnaire.questionIntro" class="intro"  id="intro" ></textarea>
@@ -117,16 +120,9 @@ export default {
             下一步
             </a> -->
             <div class="buttonContainer">
-                <button type="button" class="rotatingButton" @click="goNextAndSave()">下一步</button>
-                <div class="rotatingBall"></div>
+                <button type="button" class="pixelButton" @click="goNextAndSave()">NEXT</button>
             </div>
-            <!-- <button class="btn" type="submit" @click="goNextAndSave()">
-                下一步
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-            </button> -->
+            
         </form>
     </div>
 
@@ -152,7 +148,7 @@ export default {
 .Main{
     width: 100vw;
     height: 85vh;
-    background-color: #ffffff;
+    background-color:var(--color-page-bg);
     display: flex;
     flex-wrap: wrap;
     .formBox{
@@ -160,18 +156,14 @@ export default {
         height: 100%;
         margin:  auto;
         position: relative;
-        // background-image: url('../public/paper-texture.jpg');
-        // box-shadow:4px 4px ;
+
         form{
-            // width: 80vw;
             height: 100%;
             padding: 50px;
             margin: auto;
-            // text-align: center;
-            // margin-top: 20px;
             label{
             font-size: 24px;
-            // color: white;
+            font-family: 'Noto Sans Mono', monospace;
             }
             .questionIntro{
                 margin-top: 40px;
@@ -179,27 +171,31 @@ export default {
                 display: flex;
             }
             input{
+                font-family: 'Noto Sans Mono', monospace;
+                box-shadow: 0 0 0 2px var(--color-page-bg) inset;
+                text-shadow: 1px 1px 0 #000;
                 width: 620px;
                 font-size: 24px;
-                // height: 300px;
                 margin-left: 20px;
-                border-radius: 28px;
+                border-radius: 5px;
                 padding-left: 10px;
-                // background-color: #a3a1a1;
+                background-color: rgba(255, 255, 255, .2);
+
             }
             span{
                 // margin-top: 10px;
                 font-size: 24px;
             }
             .intro{
+                font-family: 'Noto Sans Mono', monospace;
                 height: 150px;
                 width: 620px;
-                // line-height: normal;
-                // padding-bottom: 100px;
+                font-size: 18px;
                 padding-left: 10px;
-                padding-top: 10px;
-                margin-left: 20px;
-                border-radius: 28px;
+                padding-top: 5px;
+                margin-left: 30px;
+                border-radius: 5px;
+                background-color: rgba(255, 255, 255, .2);
                 // margin-top: 50px;
             }
         
@@ -214,108 +210,52 @@ export default {
             .timePicker{
                 margin-left:20px;
                 width: 200px;
-                background-color: #e6e6e6;
+                background-color: rgba(255, 255, 255, .2);
             }
         }
-        button{
-            position: absolute;
-            right: 5%;
-            bottom: 5%;
-        }
+        // button{
+        //     position: absolute;
+        //     right: 5%;
+        //     bottom: 5%;
+        // }
         .buttonContainer {
-            position: relative;
-            width: 100%;
-            display: inline-block;
-            .rotatingButton {
-                position: relative;
-                // right: ;
-                background-color: #000000;
+            position: absolute;
+            right: 10%;
+            width: 225px;
+            height: 70px;
+            // display: inline-block;
+            font-family: 'Press Start 2P', cursive; 
+            display: flex;
+            justify-content: center;
+            background-color: #969DA3;
+            border-radius: 5px;
+            box-shadow: 0 10px 0px #666668;
+            align-items: center;
+            padding-bottom: 5px;
+            .pixelButton{
+                background-color: #FF8800;
+                width: 200px;
+                height: 50px;
+                border-radius: 5px;
                 border: none;
-                border-radius: 5%;
+                box-shadow: 0 10px 0px rgb(151, 83, 9);
+                transition: all 0.3s ease; 
                 color: white;
-                font-size: 16px;
-                padding: 20px 40px;
-                text-align: center;
-                margin-left: 900px;
-                z-index: 1;
-                // box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+                &:hover{
+                    box-shadow:  0 5px 0px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(4px); 
                 }
-                .rotatingBall {
-                    position: absolute;
-                    width: 20px;
-                    height: 20px;
-                    background-color: #979797;
-                    border-radius: 50%;
-                    top: 50%;
-                    left: 88%;
-                    transform: translate(-50%, -50%);
-                    animation: rotate 5s linear infinite;
-                    }
-
-                @keyframes rotate {
-                    0% {
-                        transform: translate(-50%, -50%) translateX(90px) translateY(-40px) rotate(0deg);
-                    }
-                    25% {
-                        transform: translate(-50%, -50%) translateX(90px) translateY(40px) rotate(90deg);
-                    }
-                    50% {
-                        transform: translate(-50%, -50%) translateX(-90px) translateY(40px) rotate(180deg);
-                    }
-                    75% {
-                        transform: translate(-50%, -50%) translateX(-90px) translateY(-40px) rotate(270deg);
-                    }
-                    100% {
-                        transform: translate(-50%, -50%) translateX(90px) translateY(-40px) rotate(360deg);
-                    }
-                    }
+                &:active{
+                    background-color: #e67e22; 
+                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(5px); 
+                }
             }
+
             }
         }
     }
+}
 
-// .createQsetBtn,
-// .createQsetBtn:focus {
-//     position: relative;
-//     min-width: 200px;
-//     background-color: black;
-//     border-radius: 4em;
-//     color: white;
-//     font-size: 1rem;
-//     font-weight: bold;
-//     text-align: center;
-//     text-decoration: none;
-//     text-transform: uppercase;
-//     transition-duration: 0.4s;
-//     padding: 10px 20px;
-//     margin-left: 600px;
-//     margin-top: 20px;
-// }
-// .createQsetBtn:hover {
-//     background-color: #3A3A3A;
-//     color: white;
-//     transition-duration: 0.1s;
-// }
-// .createQsetBtn:after {
-//     content: "";
-//     display: block;
-//     position: absolute;
-//     left: 0;
-//     top:0;
-//     width: 100%;
-//     height: 100%;
-//     opacity: 0;
-//     transition: all 0.5s;
-//     box-shadow: 0 0 10px 40px white;
-//     border-radius: 4em;
-// }
-// .createQsetBtn:active:after {
-//     opacity: 1;
-//     transition: 0s;
-//     box-shadow: 0 0 0 0 white;
-// }
-// .createQsetBtn:active {
-//     top: 1px;
-// }
 </style>
 

@@ -57,7 +57,7 @@ export default {
         <polyline points="8 1 12 5 8 9"></polyline>
     </svg> -->
 </a>
-    
+<button class="retro-button redButton"><img src="/public/home.png" width="25px" height="25px"></button>
     <!-- <RouterLink to="/QuestionaireSet"><button class="buildButton" type="button" ><b>建立問卷</b></button></RouterLink> -->
     <!-- <button type="button">統計圖表</button> -->
 </div>

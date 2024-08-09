@@ -50,14 +50,8 @@ export default{
   <div class="FatherBox">
     <!-- <breadCrum /> -->
     <div class="sideBox">
-      <div class="buttonBox">
-        <a @click="create()" href="javascript: void(0)" class="btn">
-        建立問卷
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-      </a>
+      <div class="sideButtonBox">
+        <button class="retro-button yellowButton" @click="create()"><img src="/public/hammer.png" width="50px" height="50px"></button>
       </div>
       
     </div>
@@ -182,7 +176,7 @@ export default{
 }
   .iconContainer{
     height: 5%;
-    width: 80%;
+    width: 90%;
     margin:1% auto;
     display: flex;  
     align-items: center;
@@ -208,151 +202,84 @@ export default{
     background-color: #333030 ;
     display: flex;
     justify-content: center;
-    .buttonBox{
-      width: 100%;
-      height: 6%;
+    .sideButtonBox{
+      // width: 100%;
+
       margin-top:600px;
       display: flex;
       justify-content: center;
     }
-    .btn,
-.btn:focus,
-.btn:hover {
-    position: relative;
-    min-width: 100px;
-    border: 1px solid #FFFFFF;
-    color: #FFFFFF;
-    font-size: 1rem;
-    font-weight: bold;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    -webkit-font-smoothing: antialiased;
-    padding: 10px 20px;
-}
-.btn span:nth-child(1),
-.btn span:nth-child(2),
-.btn span:nth-child(3),
-.btn span:nth-child(4) {
-    content: "";
-    display: block;
-    position: absolute;
-    background-color: #FFFFFF;
-}
-.btn span:nth-child(1) {
-    width: 1px;
-    left: 0;
-    bottom: 0;
-}
-.btn span:nth-child(2) {
-    height: 1px;
-    left: 0;
-    top: 0;
-}
-.btn span:nth-child(3) {
-    width: 1px;
-    right: 0;
-    top: 0;
-}
-.btn span:nth-child(4) {
-    height: 1px;
-    right: 0;
-    bottom: 0;
-}
-.btn:hover {
-    border: none;
-}
-.btn:hover span:nth-child(1) {
-    animation: move1 1500ms infinite ease;
-}
-.btn:hover span:nth-child(2) {
-    animation: move2 1500ms infinite ease;
-}
-.btn:hover span:nth-child(3) {
-    animation: move3 1500ms infinite ease;
-}
-.btn:hover span:nth-child(4) {
-    animation: move4 1500ms infinite ease;
-}
-@keyframes move1 {
-    0% { height: 100%; bottom: 0; }
-    54% { height: 0; bottom: 100%; }
-    55% { height: 0; bottom: 0; }
-    100% { height: 100%; bottom: 0; }
-}
-@keyframes move2 {
-    0% { width: 0; left: 0; }
-    50% { width: 100%; left: 0; }
-    100% { width: 0; left: 100%; }
-}
-@keyframes move3 {
-    0% { height: 100%; top: 0; }
-    54% { height: 0; top: 100%; }
-    55% { height: 0; top: 0; }
-    100% { height: 100%; top: 0; }
-}
-@keyframes move4 {
-    0% { width: 0; right: 0; }
-    55% { width: 100%; right: 0; }
-    100% { width: 0; right: 100%; }
-}
   }
-  
-//     width: 84vw;
-//     height: 67%;
-//     // margin:  auto;
-//     table{
-//       margin: auto;
-//       width: 90%;
-//       height: 10%;
-      
-//       th{
-//         // width: 1px;
-//         background-color: rgb(18, 80, 92);
-//         color: white;
-//         text-align: center;
-//         border-right: 2px solid white;
-//         // border-left: 2px solid white;
-//       }
-//       .checkBoxTop{
-//         // width: 1%;
-//         border-top-left-radius: 10px;
-//         border-bottom-left-radius: 10px;
-//       }
-//       .result{
-//         border-top-right-radius: 10px;
-//         border-bottom-right-radius: 10px;
-//         // border-right: 2px solid rgb(18, 80, 92);
-//       }
-//       td{
-//         height:50px;
-//         font-size: 24px;
-//         border: 1px solid rgb(255, 255, 255);
-//         background-color: rgb(220, 241, 245);
-        
-//       }
-//       .name{
-//         width: 50%;
-//       }
-//       .checkBox{
-//         width: 30px;
-//         // display: flex;
-//         // align-items: center;
-//         // justify-content: center;
-//         text-align: center;
-//         input{
-//           width: 50%;
-//           height: 40%;
-//           background-color:rgb(18, 80, 92);
-//         }
-//       }
-//       .idBox, .pathBox{
-//         text-align: center; 
-//         width: 5%;
-//         &:hover{
-//           cursor: pointer;
-//       }
+  .yellowButton{
 
-// 
+    --color-bg:#FFC054;
+    --color-bg-light:#FFD996;
+    --color-bg-dark:#F2AA30;
+  }
+
+    .retro-button{
+    position:relative;
+    appearance:none;
+    box-sizing:border-box;
+    font-size:calc( var(--button-height) / 3 );
+    font-family: 'Open Sans', sans-serif;
+    background: var(--color-bg);
+    height:var(--button-height);
+    min-width:50px;
+    // width: 50px;
+    width: 80px;
+    height: 80px;
+    border-radius:calc( var(--button-height) / 2);
+    border:0;
+    font-weight:800;
+    text-transform:uppercase;
+    color:var(--color-text);
+    text-shadow: 1px 1px var(--color-text-shadow);
+    cursor:pointer;
+    margin:6px 6px;
+    letter-spacing:.1em;
+    transition: all 200ms ease;
+    box-shadow:
+        -1px  -1px 1px var(--color-bg), 
+        0 0 0 4px var(--color-overlay-medium), 
+        1px  1px 1px var(--color-bg-dark), 
+        inset .0 .0 .0 var(--color-overlay-dark),  
+        inset .5rem .5rem .25rem var(--color-bg-light) 
+}
+
+.retro-button::-moz-focus-inner{
+    outline:none;
+    border:none;
+}
+
+.retro-button:focus{
+    outline:none;
+    box-shadow:
+    -1px -1px 1px var(--color-bg-dark),
+    0 0 0 4px var(--color-tab-focus), 
+    1px  1px 1px var(--color-bg-dark),
+    inset 0 0 0 var(--color-overlay-dark), 
+    inset .5rem .5rem .25rem var(--color-bg-light), 
+    ;
+}
+
+.retro-button:hover{
+    box-shadow:
+        -1px -1px 1px var(--color-bg-dark), 
+        0 0 0 4px var(--color-overlay-dark), 
+        1px  1px 1px var(--color-bg-dark), 
+        inset 0 0 0 var(--color-overlay-dark), 
+        inset .5rem .5rem .25rem var(--color-bg-light), 
+        ;
+    }
+
+.retro-button:active{
+    box-shadow:
+        inset 1px 1px 1px var(--color-bg),  
+        0 0 0 4px var(--color-overlay-dark), 
+        inset -1px -1px 1px var(--color-bg-light),   
+        inset .5rem .5rem .75rem var(--color-bg-dark), 
+        inset .5rem .5rem .5rem var(--color-bg-light), 
+}
 
 </style>
