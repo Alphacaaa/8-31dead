@@ -1,4 +1,5 @@
 <script>
+import axios from 'axios';
 export default{
     data(){
         return{
@@ -9,7 +10,7 @@ export default{
             //     startTime:'',
             //     endTime:'',
             //     question:'',
-            //     questionType:'單選題',
+            //     questionType:'single',
             //     questionContent:'',
             //     necessary:false,
             //     options:[],
@@ -62,6 +63,38 @@ export default{
 
             // sessionStorage.setItem('sessionQuestionnaire',JSON.stringify(this.sessionQuestionnaire))
             // sessionQuestionnaire = sessionStorage.getItem('sessionQuestionnaire')
+        },
+        gogogo(){
+            const rawDataTitle = JSON.parse(sessionStorage.getItem('questionnaire'))
+            const rawData = JSON.parse(sessionStorage.getItem('sessionQuestionnaire'))
+            const formattedData = {
+            questionName: rawDataTitle.questionName || '', 
+            questionIntro: rawDataTitle.questionIntro || '',
+            startTime: rawDataTitle.startTime || '',
+            endTime: rawDataTitle.endTime || '',
+            published: rawDataTitle.published || false,
+            questionList: rawData.map((item,index) => ({
+                id:index + 1,
+                question: item.question,
+                questionType: item.questionType,
+                necessary: item.necessary,
+                comfirmOptions: item.comfirmOptions.map(option => {
+
+                    delete option.editAllow;
+                    return option;
+                })
+                .map(comfirmOptions => comfirmOptions.value) 
+                .join(';') 
+            }))
+        }
+            console.log(JSON.stringify(formattedData, null, 2));
+            axios.post('http://localhost:8080/quiz/create', formattedData)
+            .then(response => {
+                console.log('success', response.data);
+            })
+            .catch(error => {
+                console.error('傳送問卷資料時出現錯誤:', error);
+            });
         }
     }
 }   
@@ -117,15 +150,15 @@ export default{
                     <p>*</p>
                 </div>
                 <div class="textQuestion">
-                    <textarea  class="typeLabel" v-if="question.questionType === '簡答題' " for="" readonly></textarea>
+                    <textarea  class="typeLabel" v-if="question.questionType === 'text' " for="" readonly></textarea>
                 </div>
                 <div class="optionBox">
                     <div  v-for="(option,index) in question.comfirmOptions" class="option">
-                        <label  v-if="question.questionType === '單選題'" for="redio">
+                        <label  v-if="question.questionType === 'single'" for="redio">
                             <input  name="typeRadio" id="radio" type="radio">
                             <label for="radio">{{ option.value}} </label>
                         </label>
-                        <label  v-if="question.questionType === '多選題'" for="checkbox">
+                        <label  v-if="question.questionType === 'multi'" for="checkbox">
                             <input  name="typeCheckbox" id="checkbox "type="checkbox">
                             <label for="checkbox">{{ option.value}}</label>
                         </label>
@@ -134,6 +167,8 @@ export default{
             </p>
             
         </div>
+        <button @click="gogogo()">儲存不發布</button>
+        <button @click="gogogo()">送出並發布</button>
     </div>
 
 </template>

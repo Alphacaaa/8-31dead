@@ -40,6 +40,11 @@ const router = createRouter({
       }
     },
     {
+      path: '/QuestionaireEdit/:id',
+      name: 'QuestionaireEdit',
+      component: () => import('../views/QuestionaireEdit.vue'),
+    },
+    {
       path:'/SetContent',
       name:'SetContet',
       component:() => import('../views/SetContent.vue'),
@@ -62,6 +67,11 @@ const router = createRouter({
       path:'/preview',
       name:'preview',
       component:() => import('../views/preview.vue'),
+    },
+    {
+      path:'/questionnaireContent/:id',
+      name:'questionnaireContent',
+      component:() => import('../views/questionnaireContent.vue'),
     }
   ]
 })

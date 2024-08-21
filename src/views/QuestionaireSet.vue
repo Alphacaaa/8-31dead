@@ -12,6 +12,19 @@ export default {
     data(){
         return{
             // sessionQuestionnaire: JSON.parse(sessionStorage.getItem('sessionQuestionnaire')) || [],
+            // questionnaire:{
+            //     questionName:'',
+            //     questionIntro:'',
+            //     startTime:'',
+            //     endTime:'',
+            //     question:'',
+            //     questionType:'單選題',
+            //     questionContent:'',
+            //     necessary:false,
+            //     options:[],
+            //     comfirmOptions:[],
+            //     filteredOptions:[],
+            // },
             questionnaire:{
                 questionName:'',
                 questionIntro:'',
@@ -25,6 +38,7 @@ export default {
                 comfirmOptions:[],
                 filteredOptions:[],
             },
+            editQuestionnaire:[] || null,
             settingShow: true,
             selectedDate1: null,
             selectedDate2: null,
@@ -41,7 +55,34 @@ export default {
     },
     created(){
         this.clearSessionData()
+    //    // 从sessionStorage获取问卷数据
+    //     this.editQuestionnaire = sessionStorage.getItem('dataQuestionnaires');
+    //     console.log(this.$route.params)
         
+    //     // 获取路由中的ID参数
+    //     const id = this.$route.params.id;
+    //     // const id = "ya";
+    //     console.log("Received ID:", id);
+    //     console.log("Session Storage Data:", JSON.parse(this.editQuestionnaire));
+
+
+    //     if (this.editQuestionnaire) {
+    //     this.questionnaires = JSON.parse(this.editQuestionnaire);
+    //     this.editQuestionnaire = this.questionnaires.find(q => q.id === parseInt(id));
+    //     console.log(this.editQuestionnaire)
+    //     this.questionnaire.questionName = this.editQuestionnaire.questionName || this.questionnaire.questionName;
+    //     this.questionnaire.questionIntro = this.editQuestionnaire.questionIntro || this.questionnaire.questionIntro;
+    //     this.questionnaire.startTime = this.editQuestionnaire.startTime || this.questionnaire.startTime;
+    //     this.questionnaire.endTime =this.editQuestionnaire.endTime || this.questionnaire.endTime;
+    //     this.questionnaire.questionType = this.editQuestionnaire.questionType || this.questionnaire.questionType;
+    //     this.questionnaire.questionContent = this.editQuestionnaire.questionContent || this.questionnaire.questionContent;
+    //     this.questionnaire.necessary = this.editQuestionnaire.necessary !== undefined ? editQuestionnaire.necessary : this.questionnaire.necessary;
+    //     console.log(this.questionnaire)
+
+    //     } else {
+    //     console.error('問卷資料未找到');
+    //     }
+
     },
     mounted(){
         this.flatpickrOptions.minDate = this.calculateMinDateStart()
@@ -98,7 +139,7 @@ export default {
         <form action="" @submit.prevent>
             <div class="questionName">
                 <label for=""><b>問卷名稱:</b></label>
-                <input v-model="questionnaire.questionName" type="text" placeholder="設定問卷名稱">
+                <input v-model="this.questionnaire.questionName" type="text" placeholder="設定問卷名稱">
             </div>
             <div class="questionIntro">
                 <div class="introDiv">

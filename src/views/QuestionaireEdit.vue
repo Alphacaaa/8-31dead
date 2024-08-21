@@ -1,306 +1,117 @@
 <script>
 import { RouterLink } from 'vue-router'
-// import Vue from 'vue'
-// import SetContent from '../components/SetContent.vue'
+import QuestionaireSetFirst from '../components/HomePageList.vue'
 import breadCrum from '../components/breadCrum.vue'
 import Header from '../components/Header.vue'
-import SetList from '../components/SetContentList.vue'
+import flatPickr from 'vue-flatpickr-component'
+import 'flatpickr/dist/flatpickr.css'
 import { useColorStore } from '@/stores/counter'
-
 const colorStore = useColorStore()
 const colors = colorStore.colors
-// import preview from '../components/preview.vue'
-// sessionStorage.setItem('key', JSON.stringify(questionnaire));
-// const  data = JSON.parse(sessionStorage.getItem('key'));
 export default {
     data(){
         return{
             // sessionQuestionnaire: JSON.parse(sessionStorage.getItem('sessionQuestionnaire')) || [],
-            sessionQuestionnaire:[],
+            // questionnaire:{
+            //     questionName:'',
+            //     questionIntro:'',
+            //     startTime:'',
+            //     endTime:'',
+            //     question:'',
+            //     questionType:'單選題',
+            //     questionContent:'',
+            //     necessary:false,
+            //     options:[],
+            //     comfirmOptions:[],
+            //     filteredOptions:[],
+            // },
             questionnaire:{
                 questionName:'',
                 questionIntro:'',
                 startTime:'',
                 endTime:'',
                 question:'',
-                questionType:'single',
-                necessary:false,
+                questionType:'單選題',
                 questionContent:'',
+                necessary:false,
                 options:[],
                 comfirmOptions:[],
                 filteredOptions:[],
             },
-            session:[],
-            forPreview:[],
-            optionsShow:true,
-            buttonShow:true,
-            editAllow:false,
-            savedAndShow:false,
-            editOrNot:null,
-            showQuestionError:false,
-            showSelectionError:false,
-            draggingIndex: null,
-            targetIndex: null,
-            itemHeight: 50,
-            placeholderIndex:null,
-            changeColor:false,
-            selectionShow:true,
-            // formData{
+            editQuestionnaire:[] || null,
+            settingShow: true,
+            selectedDate1: null,
+            selectedDate2: null,
+            flatpickrOptions: {
+                dateFormat: 'Y-m-d', 
+                minDate:'today',
+                defaultDate:this.calculateMinDateStart()
+            },
+            flatpickrOptions2: {
+                dateFormat: 'Y-m-d', 
+                defaultDate:this.calculateMinDateEnd()
+            }
+        }
+    },
+    created(){
+        this.clearSessionData()
 
-            // },
+        this.editQuestionnaire = sessionStorage.getItem('dataQuestionnaires')
+        const id = this.$route.params.id;
+        console.log(id,JSON.parse(this.editQuestionnaire))
+        console.log(this.$route.params)
+
+        if (this.editQuestionnaire) {
+        this.questionnaires = JSON.parse(this.editQuestionnaire);
+        this.editQuestionnaire = this.questionnaires.find(q => q.id === parseInt(id));
+        console.log(this.editQuestionnaire)
+        } else {
+        console.error('問卷資料未找到');
         }
     },
     mounted(){
-        // sortable.create(this.$refs.sortableContainer,{
-        //     animation: 150,
-        //     ghostClass: 'sortable-ghost',
-        //     onEnd: (event) => {
-        //         console.log('Item moved:', event.item);
-        //     }
-        // })
-        // savedAndShow = false
-        const savedQuestionnaire = sessionStorage.getItem('questionnaire')
-        console.log(savedQuestionnaire)
-        if (savedQuestionnaire){
-            this.questionnaire = JSON.parse(savedQuestionnaire)
-        }
-        // 
-        const sessionData = sessionStorage.getItem('sessionQuestionnaire')
-        this.forPreview = sessionData ? JSON.parse(sessionData) : []
-        this.sessionQuestionnaire = [...this.forPreview]
-
-        console.log(this.questionnaire)
-        console.log(this.forPreview)
-
-        // if(sessionStorage.getItem('sessionQuestionnaire') !== null){
-        //     const forPreview =  JSON.parse(sessionStorage.getItem('sessionQuestionnaire'))
-        //     console.log("嗨")
-            
-        // }
+        this.flatpickrOptions.minDate = this.calculateMinDateStart()
     },
     methods:{
-        addSelection(){
-            this.questionnaire.options.push(
-                {
-                value :'', editAllow : false
-                }
-            )
-            this.optionsShow = true
-            this.buttonShow = false
-            this.selectionShow = false
-            console.log(this.optionsShow)
-        },
-        removeSelection(index){
-            this.questionnaire.options.splice(index,1)
-            this.questionnaire.comfirmOptions.splice(index,1)
-            console.log(this.comfirmOptions)
-            this.optionsShow = true
-            this.buttonShow = true
-            this.editAllow = false
-
-        },
-        cancelSelection(index){
-            this.questionnaire.options.splice(index,1)
-            // this.comfirmOptions.splice(index,1)
-            console.log(this.comfirmOptions)
-            this.optionsShow = true
-            this.buttonShow = true
-            this.editAllow = false
-
-        },
-        comfirm(){
-            if(this.questionnaire.question.trim()===''){
-                this.showQuestionError = true
-                setTimeout(()=>{
-                    this.showQuestionError = false
-                },500)
-                return
-            }
-            // this.comfirmOptions.push(...this.options)
-            this.questionnaire.comfirmOptions.push(...this.questionnaire.options.filter(option => option.value.trim() !== ''))
-            console.log(this.questionnaire.comfirmOptions)
-            this.questionnaire.options =[]
-            this.questionnaire.options.push(
-                {
-                value :'', editAllow : false
-                }
-            )
-            // this.optionsShow = false
-            // this.buttonShow = true
-            console.log(this.optionsShow)
-        },
-        editSelection(index){
-            // this.editAllow = true
-            console.log(this.editAllow)
-            this.questionnaire.comfirmOptions.forEach((option,editIndex)=>{
-                if(index === editIndex) {
-                    option.editAllow = true;
-                    console.log(this.questionnaire.comfirmOptions)
-                    console.log(this.questionnaire.comfirmOptions.editAllow)
-                    console.log(option.editAllow)
-                }else{
-                    option.editAllow = false;
-            }
-            //     this.questionnaire.comfirmOptions[index].editAllow = (index === editIndex);
-            // })
-            console.log(this.editAllow)
-        })
-        },
-        saveEdited(index){
-            this.questionnaire.comfirmOptions[index].editAllow = false
-        },
-        submitForm(){
-            if(this.questionnaire.question.trim()==='' ){
-                this.showQuestionError = true
-                setTimeout(()=>{
-                    this.showQuestionError = false
-                },500)
-                return
-            }else if((this.questionnaire.questionType ==='single' || this.questionnaire.questionType ==='multi') && this.questionnaire.comfirmOptions.length == 0) {
-
-                this.showSelectionError = true
-                setTimeout(()=>{
-                    this.showSelectionError = false
-                },500)
-                return
-            }
+        calculateMinDateStart() {
+            const now = new Date()
+            now.setDate(now.getDate() + 2)
+            return now.toISOString().split('T')[0]
+            },
+        calculateMinDateEnd() {
+            const now = new Date()
             
-            if(this.editOrNot !== null){
-                this.forPreview[this.editOrNot] = {...this.questionnaire}
-                this.sessionQuestionnaire[this.editOrNot] = {...this.questionnaire}
-                // console.log(this.forPreview)
-                // console.log(this.sessionQuestionnaire)
-                // console.log(this.questionnaire)
-                this.editOrNot = null
-            }else{
-                this.sessionQuestionnaire.push({...this.questionnaire})
-                this.forPreview.push({...this.questionnaire})
+            now.setDate(now.getDate() + 7)
+            return now.toISOString().split('T')[0]
+            },
+        goNextAndSave(){
+            if (this.questionnaire.questionName == "") {
+                alert("請填寫問卷主題")
+                this.$router.push('/QuestionaireSet')
+                console.log("no")
+            }else if(this.questionnaire !== undefined){
+                console.log(this.questionnaire)
+                sessionStorage.setItem('questionnaire',JSON.stringify(this.questionnaire));
+                this.$router.push('/SetContent')
+                console.log("sessionStorage saved");
             }
-            
-            console.log(this.sessionQuestionnaire)
-            console.log("問題建立"+this.questionnaire)
-            console.log("這是修改前資料庫"+sessionStorage.getItem('sessionQuestionnaire'))
-            // if(sessionStorage.getItem('sessionQuestionnaire') === null){
-            //     sessionStorage.setItem('sessionQuestionnaire',JSON.stringify(this.sessionQuestionnaire));
-            // }else{
-            //     this.session = JSON.parse(sessionStorage.getItem('sessionQuestionnaire'))
-            //     if(this.editOrNot !== null){
-            //         this.session[this.editOrNot] = {...this.questionnaire}
-            //     }else{
-            //         this.session.push(this.questionnaire);
-            //     }
-            //     console.log("這是session"+this.session)
-            //     console.log(this.questionnaire)
-            sessionStorage.setItem('sessionQuestionnaire',JSON.stringify(this.sessionQuestionnaire))
-            console.log("修改後資料庫"+sessionStorage.getItem('sessionQuestionnaire'))
-        // }
-            // console.log(this.forPreview)
-            this.questionnaire = {
-                questionName: this.questionnaire.questionName,
-                questionIntro: this.questionnaire.questionIntro,
-                startTime:this.questionnaire.startTime,
-                endTime:this.questionnaire.endTime,
-                question:'',
-                questionType:'single',
-                necessary:false,
-                questionContent:'',
-                options:[],
-                comfirmOptions:[],
-                filteredOptions:[],
-            }
-            console.log(this.questionnaire)
-            this.savedAndShow = true
-            console.log(this.savedAndShow)
-            
         },
-        preview(){
-            this.$router.push('/preview')
-            
-        //     const rawDataTitle = JSON.parse(sessionStorage.getItem('questionnaire'))
-        //     const rawData = JSON.parse(sessionStorage.getItem('sessionQuestionnaire'))
-        //     const formattedData = {
-        //     questionName: rawDataTitle.questionName || '', // 根據實際的結構取值
-        //     questionIntro: rawDataTitle.questionIntro || '',
-        //     startTime: rawDataTitle.startTime || '',
-        //     endTime: rawDataTitle.endTime || '',
-        //     published: rawDataTitle.published || false,
-        //     questionList: rawData.map((item,index) => ({
-        //         id:index + 1,
-        //         question: item.question,
-        //         questionType: item.questionType,
-        //         necessary: item.necessary,
-        //         comfirmOptions: item.comfirmOptions.map(option => {
-        //             // 刪除 `value` 和 `editAllow` 屬性
-        //             delete option.editAllow;
-        //             return option;
-        //         })
-        //         .map(comfirmOptions => comfirmOptions.value) // 提取 `value` 欄位並形成陣列
-        //         .join(';') // 將 `value` 轉成分號分隔的字串
-        //     }))
-        // }
-        //     console.log(JSON.stringify(formattedData, null, 2));
-        //     axios.post('http://localhost:8080/quiz/create', formattedData)
-        //     .then(response => {
-        //         console.log('問卷資料已成功傳送:', response.data);
-        //     })
-        //     .catch(error => {
-        //         console.error('傳送問卷資料時出現錯誤:', error);
-        //     });
+        clearSessionData(){
+            sessionStorage.removeItem('sessionQuestionnaire')
+            sessionStorage.removeItem('questionnaire')
+            console.log("清除session")
         },
-        clear(){
-            sessionStorage.clear();
-            this.forPreview = []
-            this.questionnaire = {
-                questionName: '',
-                questionIntro: '',
-                startTime:'',
-                endTime:'',
-                question:'',
-                questionType:'single',
-                necessary:false,
-                questionContent:'',
-                options:[],
-                comfirmOptions:[],
-                filteredOptions:[],
-            }
-            console.log(sessionStorage.getItem('sessionQuestionnaire'))
-        },
-        backToQset(){
-            sessionStorage.clear();
-            this.forPreview = []
-            this.questionnaire = {
-                questionName: '',
-                questionIntro: '',
-                startTime:'',
-                endTime:'',
-                question:'',
-                questionType:'single',
-                necessary:false,
-                questionContent:'',
-                options:[],
-                comfirmOptions:[],
-                filteredOptions:[],
-            }
-            console.log(sessionStorage.getItem('sessionQuestionnaire'))
-            this.$router.push('/QuestionaireSet')
-        },
-        editQuestion(index){
-            this.questionnaire = {...this.forPreview[index]}
-            this.editOrNot = index
-        },
-        removePreviewQuestion(index){
-            this.forPreview.splice(index,1)
-            this.sessionQuestionnaire.splice(index,1)
-            sessionStorage.setItem('sessionQuestionnaire',JSON.stringify(this.sessionQuestionnaire))
-        },
+        parseOptions(optionsString) {
+        return optionsString ? optionsString.split(';').map(option => option.trim()) : [];
+    },
+        
     },
     components: {
         RouterLink,
-        // SetContent,
+        QuestionaireSetFirst,
         breadCrum,
         Header,
-        SetList,
-        // preview
+        flatPickr
     }
     
 }
@@ -311,14 +122,40 @@ export default {
 <!-- <breadCrum /> -->
 
 <div class="Main">
-    <!-- <button type="button" @click="backToQset()">返回</button> -->
     <!-- <breadCrum /> -->
     <div class="formBox">
+        <form action="" @submit.prevent>
+            <div class="questionName">
+                <label for=""><b>問卷名稱:</b></label>
+                <input v-model="this.editQuestionnaire.questionName" type="text" placeholder="設定問卷名稱">
+            </div>
+            <div class="questionIntro">
+                <div class="introDiv">
+                    <span class="introLabel" for="intro" ><b>問卷說明:</b></span>
+                </div>
+                
+                <textarea v-model="this.editQuestionnaire.questionIntro" class="intro"  id="intro" ></textarea>
+            </div>
+            <div class="timeBox">
+                <label for=""><b>開始時間:</b></label>
+                <flat-pickr class="timePicker" v-model="editQuestionnaire.startTime" :config="flatpickrOptions"></flat-pickr>
+                <!-- <input type="date" class="timePicker" v-model="editQuestionnaire.startTime" :config="flatpickrOptions"> -->
+            </div>
+            <div class="timeBox">
+                <label for=""><b>結束時間:</b></label>
+                <flat-pickr  class="timePicker" v-model="editQuestionnaire.endTime" :config="flatpickrOptions2"></flat-pickr>
+            </div>
+
+            <div class="buttonContainer">
+                <button type="button" class="pixelButton" @click="goNextAndSave()">NEXT</button>
+            </div>
+            
+        </form>
         <!-- <button type="button" @click="backToQset()">返回</button> -->
         <!-- <a href="javascript: void(0)" class="SetContentBtn" @click="backToQset()">
             <<返回
         </a> -->
-        <form action=""  @submit.prevent>
+        <form class="form2" action=""  @submit.prevent>
             <!-- <label for=""></label> -->
             <input class="setQuestion" type="text" v-model="questionnaire.question" :class="{'error' : showQuestionError}" placeholder="設定問題">
             <p v-if="showQuestionError" class="errorMsg">請先建立問題名稱</p>
@@ -345,9 +182,11 @@ export default {
                     </div>
                 </div>
             <div class="optionAddAndView">
-                <div class="comfirmList" v-if="questionnaire.comfirmOptions.length > 0 && questionnaire.questionType" >
-                        <div v-for="(option,index) in questionnaire.comfirmOptions" :key="index" class="comfirmBox">
-                            <span v-if="!(option.editAllow)">{{ option.value }}</span>
+                <!-- <div class="comfirmList" v-if="editQuestionnaire.questionList.length > 0 && editQuestionnaire.questionType" > -->
+                <div class="comfirmList" >
+                        <div v-for="(option,index) in editQuestionnaire.questionList" :key="index" class="comfirmBox">
+                            <!-- <span v-if="!(option.editAllow)">{{ option.value }}</span> -->
+                            <span>{{ option.question }}</span>
                             <input class="editInput" v-model="option.value" v-if="option.editAllow" @keyup.enter="saveEdited(index)" type="text" placeholder="編輯...">
                             <img src="/public/edit-button.png"  width="30px" height="30px" @click="editSelection(index)" class="edit" v-if="!(option.editAllow)" >
                             <img @click="saveEdited(index)" v-if="option.editAllow" class="editComfirm" src="/public/pixelated.png" width="30px" height="30px" alt="">
@@ -380,7 +219,7 @@ export default {
         </div> -->
         
         </form>
-    </div>
+    
     <div class="previewList">
         <div class="title">
             <!-- <p>{{ this.questionnaire.questionName}}</p> -->
@@ -393,7 +232,7 @@ export default {
         </div>
         <div class="content" ref="sortableContainer" >
 
-            <p class="questionName" v-for="(question,index) in forPreview" :key="index" >
+            <p class="questionName" v-for="(question,index) in editQuestionnaire.questionList" :key="index" >
                 {{index +1 }}﹑
                 {{ question.question }}
                 <!-- <input type="checkbox" v-model="sessionQuestionnaire.necessary"> -->
@@ -416,6 +255,8 @@ export default {
             <button @click="preview()" class="previewButton" type="button">PREVIEW>> </button>
         </div>
     </div>
+    </div>
+
 </div>
 
 
@@ -423,46 +264,139 @@ export default {
 
 <style scoped lang="scss">
 *{
-    // border:1px solid rgb(0, 0, 0);
+    // border:1px solid black;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-size: 24px;
-    // font-family: 'Noto Sans Mono', monospace;
+    
+    // font-size: 24px;
+    // background-color: #ECE2C6;
+    // background-color: #649ABC;
     // display: flex;
     // flex-wrap: wrap;
 }
-body{
-    display: flex;
-}
-.placeholder {
-    background-color: #ddd;
-    border: 1px dashed #aaa;
-    margin: 2px 0;
-    height: 50px; 
-}
+
 .Main{
-    background-color:#B9B5AA;
     width: 100vw;
     height: 85vh;
+    background-color:var(--color-page-bg);
     display: flex;
-    flex-wrap: wrap;  
+    flex-wrap: wrap;
     .formBox{
-        width: 40vw;
+        width: 100vw;
         height: 100%;
-        // margin: auto;
+        margin:  auto;
         position: relative;
-        // overflow-y: auto;
-        scale:0.9;
+        display: flex;
         form{
-            height: 90%;
+            height: 100%;
+            width: 80%;
+            // padding: 50px;
+            // margin-right: 10px;
+            label{
+            font-size: 24px;
+            margin-left: 20px;
+            font-family: 'Noto Sans Mono', monospace;
+            }
+            .questionIntro{
+                margin-top: 40px;
+                height: 200px;
+                display: flex;
+            }
+            input{
+                font-family: 'Noto Sans Mono', monospace;
+                box-shadow: 0 0 0 2px var(--color-page-bg) inset;
+                text-shadow: 1px 1px 0 #000;
+                width: 620px;
+                font-size: 24px;
+                margin-left: 20px;
+                border-radius: 5px;
+                padding-left: 10px;
+                background-color: rgba(255, 255, 255, .2);
+
+            }
+            span{
+                // margin-top: 10px;
+                font-size: 24px;
+            }
+            .intro{
+                font-family: 'Noto Sans Mono', monospace;
+                height: 150px;
+                width: 485px;
+                font-size: 18px;
+                padding-left: 10px;
+                padding-top: 5px;
+                margin-left: 30px;
+                border-radius: 5px;
+                background-color: rgba(255, 255, 255, .2);
+                // margin-top: 50px;
+            }
+        
+        .timeBox{
+            margin-top: 20px;
+            width: 35%;
+            height: 20%;
+            label{
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+            .timePicker{
+                margin-left:20px;
+                width: 200px;
+                background-color: rgba(255, 255, 255, .2);
+            }
+        }
+        // button{
+        //     position: absolute;
+        //     right: 5%;
+        //     bottom: 5%;
+        // }
+        .buttonContainer {
+            position: absolute;
+            right: 10%;
+            width: 225px;
+            height: 70px;
+            // display: inline-block;
+            font-family: 'Press Start 2P', cursive; 
+            display: flex;
+            justify-content: center;
+            background-color: #969DA3;
+            border-radius: 5px;
+            box-shadow: 0 10px 0px #666668;
+            align-items: center;
+            padding-bottom: 5px;
+            .pixelButton{
+                background-color: #FF8800;
+                width: 200px;
+                height: 50px;
+                border-radius: 5px;
+                border: none;
+                box-shadow: 0 10px 0px rgb(151, 83, 9);
+                transition: all 0.3s ease; 
+                color: white;
+                &:hover{
+                    box-shadow:  0 5px 0px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(4px); 
+                }
+                &:active{
+                    background-color: #e67e22; 
+                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
+                    transform: translateY(5px); 
+                }
+            }
+
+            }
+        }
+        .form2{
+            height: 100%;
+            width: 100%;
             margin:20px;
             // display: flex;
             // flex-wrap: wrap;
             align-items: center;
             position: relative;
             label{
-                width: 100px;
+                width: 150px;
                 margin-top:20px ;
                 font-size: 24px;
             }
@@ -701,7 +635,8 @@ body{
     .previewList{
         // border:1px solid rgb(0, 0, 0);
         
-        margin-left: 4vw;
+        // margin-left: 4vw;
+        margin-right: 2vw;
         width:55vw;
         height: 85vh;
         position: relative;
@@ -804,159 +739,7 @@ body{
             //     overflow-x: auto;
             // }
         }
-            .buttonDiv{
-            position: absolute;
-            right: 11%;
-            margin-top: 80px;
-            // margin-right:500px;
-            // border: 1px solid black;
-            width: 800px;
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #969DA3;
-            border-radius: 5px;
-            box-shadow: 0 10px 0px #666668;
-            z-index: 99;
-            font-family: 'Press Start 2P';
-            .backButton, .submitButton, .previewButton{
-                background-color: #FF8800;
-                color: white;
-                margin: 10px;
-                width: 200px;
-                height: 50px;
-                border-radius: 5px;
-                border: none;
-                box-shadow: 0 10px 0px rgb(151, 83, 9);
-                transition: all 0.3s ease; 
-                &:hover{
-                    box-shadow:  0 5px 0px rgba(0, 0, 0, 0.4); 
-                    transform: translateY(4px); 
-                }
-                &:active{
-                    background-color: #e67e22; 
-                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
-                    transform: translateY(5px); 
-                }
-            }
-            .submitButton{
-                background-color :#0066B4;
-                box-shadow: 0 10px 0px #033257;
-                &:hover{
-                    box-shadow:  0 5px 0px rgba(0, 0, 0, 0.4); 
-                    transform: translateY(4px); 
-                }
-                &:active{
-                    background-color: #0066B4; 
-                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
-                    transform: translateY(5px); 
-                }
-            }
-            .previewButton{
-                width: 240px;
-                background-color :#2dc234;
-                box-shadow: 0 10px 0px #115314;
-                &:hover{
-                    box-shadow:  0 5px 0px #115314; 
-                    transform: translateY(4px); 
-                }
-                &:active{
-                    background-color: #2dc234; 
-                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4); 
-                    transform: translateY(5px); 
-                }
-            }
-        }
     }
 
-.errorMsg{
-    color: red;
-    font-size: 16px;
-    margin-top: 5px;
-}
-.error {
-    border: 2px solid red;
-    animation: shake 0.5s;
-}
-
-@keyframes shake {
-    0% { transform: translateX(-5px); }
-    25% { transform: translateX(5px); }
-    50% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-    100% { transform: translateX(0); }
-}
-.anime-enter-active, .anime-leave-active {
-    transition: opacity 0.5s;
-}
-.anime-enter, .anime-leave-to {
-    opacity: 0;
-}
-
-
-
-
-.retro-button{
-    position:relative;
-    appearance:none;
-    box-sizing:border-box;
-    font-size:calc( var(--button-height) / 3 );
-    font-family: 'Open Sans', sans-serif;
-    background: var(--color-bg);
-    height:var(--button-height);
-    // min-width:20px;
-    width: 20px;
-    border-radius:calc( var(--button-height) / 2);
-    border:0;
-    font-weight:800;
-    text-transform:uppercase;
-    color:var(--color-text);
-    text-shadow: 1px 1px var(--color-text-shadow);
-    cursor:pointer;
-    margin:6px 6px;
-    letter-spacing:.1em;
-    transition: all 200ms ease;
-    box-shadow:
-        -1px  -1px 1px var(--color-bg), 
-        0 0 0 4px var(--color-overlay-medium), 
-        1px  1px 1px var(--color-bg-dark), 
-        inset .0 .0 .0 var(--color-overlay-dark),  
-        inset .5rem .5rem .25rem var(--color-bg-light) 
-}
-
-.retro-button::-moz-focus-inner{
-    outline:none;
-    border:none;
-}
-
-.retro-button:focus{
-    outline:none;
-    box-shadow:
-    -1px -1px 1px var(--color-bg-dark),
-    0 0 0 4px var(--color-tab-focus), 
-    1px  1px 1px var(--color-bg-dark),
-    inset 0 0 0 var(--color-overlay-dark), 
-    inset .5rem .5rem .25rem var(--color-bg-light), 
-    ;
-}
-
-.retro-button:hover{
-    box-shadow:
-        -1px -1px 1px var(--color-bg-dark), 
-        0 0 0 4px var(--color-overlay-dark), 
-        1px  1px 1px var(--color-bg-dark), 
-        inset 0 0 0 var(--color-overlay-dark), 
-        inset .5rem .5rem .25rem var(--color-bg-light), 
-        ;
-    }
-
-.retro-button:active{
-    box-shadow:
-        inset 1px 1px 1px var(--color-bg),  
-        0 0 0 4px var(--color-overlay-dark), 
-        inset -1px -1px 1px var(--color-bg-light),   
-        inset .5rem .5rem .75rem var(--color-bg-dark), 
-        inset .5rem .5rem .5rem var(--color-bg-light), 
-}
 </style>
+
