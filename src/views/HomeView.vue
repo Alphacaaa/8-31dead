@@ -8,28 +8,37 @@ import scroll from '../components/scroll.vue'
 import { generate } from '@vue/compiler-core';
 import { bisectRight, color } from 'd3';
 import { h } from 'vue';
+import axios from 'axios';
 export default{
   data() {
     return {
+      colors : ['red', 'green', 'blue', 'yellow'],
+      buttonColors: [],
+      questionnaires: [],
       maxBlocks: 10,
       blocks:[],
-      // users: [
-      //   { id: 1, name: '', age:  '',path:'前往'},
-      //   { id: 2, name: '', age:  '',path:'前往'},
-      //   { id: 3, name: '', age:  '',path:'前往'},
-      //   { id: 4, name: '', age:  '',path:'前往'},
-      //   { id: 5, name: '', age:  '',path:'前往'},
-      //   { id: 6, name: '', age:  '',path:'前往'},
-      //   { id: 7, name: '', age:  '',path:'前往'},
-      //   { id: 8, name: '', age:  '',path:'前往'},
-      //   { id: 9, name: '', age:  '',path:'前往'},
-      //   { id: 10, name: '', age:  '',path:'前往'},
-      //   { id: 11, name: '', age:  '',path:'前往'},
-      //   { id: 11, name: '', age:  '',path:'前往'},
-      //   { id: 11, name: '', age:  '',path:'前往'},
-      //   { id: 11, name: '', age:  '',path:'前往'},
-      //   { id: 11, name: '', age:  '',path:'前往'},
-      // ],
+      formattedData: {
+        quizName:"",
+        startDate:"",
+        endDate: ""
+      },
+      users: [
+        { id: 1, name: '', age:  '',path:'前往'},
+        { id: 2, name: '', age:  '',path:'前往'},
+        { id: 3, name: '', age:  '',path:'前往'},
+        { id: 4, name: '', age:  '',path:'前往'},
+        { id: 5, name: '', age:  '',path:'前往'},
+        { id: 6, name: '', age:  '',path:'前往'},
+        { id: 7, name: '', age:  '',path:'前往'},
+        { id: 8, name: '', age:  '',path:'前往'},
+        { id: 9, name: '', age:  '',path:'前往'},
+        { id: 10, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+        { id: 11, name: '', age:  '',path:'前往'},
+      ],
       currentPage:1,
       tablePerPage:10,
       selectedStartDate: null, 
@@ -40,23 +49,62 @@ export default{
       }
     }
   },
+  created(){
+    this.initButtonColors();
+    axios.post('http://localhost:8080/quiz/search',this.formattedData) 
+      .then(response => {
+        console.log('Received data:', response.data);
+        this.questionnaires = response.data.quizResList || [];
+        sessionStorage.setItem('dataQuestionnaires', JSON.stringify(this.questionnaires));
+      })
+      .catch(error => {
+        this.error = 'Error: ' + error.message;
+      });
+  
+  },
   mounted(){
+    this.initButtonColors();
     console.log("前")
     this.generateBlock()
     console.log("後")
     setInterval(() => this.generateBlock(), 100)
-    
+    axios.post('http://localhost:8080/quiz/search',this.formattedData) 
+      .then(response => {
+        console.log('Received data:', response.data);
+        this.questionnaires = response.data.quizResList || [];
+        sessionStorage.setItem('dataQuestionnaires', JSON.stringify(this.questionnaires));
+      })
+      .catch(error => {
+        this.error = 'Error: ' + error.message;
+      });
 
   },
     computed:{
-      currentPageCal(){
-        const start =(this.currentPage - 1) * this.tablePerPage
-        const end = start + this.tablePerPage
-        return this.users.slice(start,end)
+
+      // currentPageData(){
+      //   const start =(this.currentPage - 1) * this.tablePerPage
+      //   const end = start + this.tablePerPage
+      //   return this.questionnaires.slice(start,end)
+      // },
+      // totalPages(){
+      //   return Math.ceil(this.questionnaires.length / this.tablePerPage)
+      //   },
+      // pagesArray() {
+      //     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      // },
+      currentPageData() {
+        const filteredQuestionnaires = this.questionnaires.filter(q => q.published);
+        const start = (this.currentPage - 1) * this.tablePerPage;
+        const end = start + this.tablePerPage;
+        return filteredQuestionnaires.slice(start, end);
       },
-      totalPages(){
-        return Math.ceil(this.users.length / this.tablePerPage)
-      }
+      totalPages() {
+        const filteredQuestionnaires = this.questionnaires.filter(q => q.published);
+        return Math.ceil(filteredQuestionnaires.length / this.tablePerPage);
+      },
+      pagesArray() {
+        return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+      },
     },
     methods:{
       getRandomBlockType() {
@@ -114,14 +162,66 @@ export default{
         top: document.body.scrollHeight,
         behavior: 'smooth' // 平滑滾動
       })
-    }
+    },
+  
+    getButtonClass(index) {
+        const color = this.buttonColors[index];
+        console.log(`retro-button ${this.buttonColors[index]}-button`)
+        return `retro-button ${this.buttonColors[index]}-button`
+    },
+    initButtonColors() {
+        if (this.totalPages > 0) {
+          this.buttonColors = Array.from({ length: this.totalPages }, () => this.getRandomColor());
+          }
+      },
+      getStatus(questionnaire) {
+      if (!questionnaire.published) {
+        return '未發布'
+      }
+        const now = new Date();
+        const startDate = new Date(questionnaire.startTime);
+        const endDate = new Date(questionnaire.endTime);
+
+        if (now < startDate) {
+          return '未開始'
+        } else if (now >= startDate && now <= endDate) {
+          return '進行中'
+        } else if (now > endDate) {
+            return '已結束';
+        } else {
+          return '/available.png'
+        }
+    },
+    isClickable(questionnaire) {
+      const now = new Date();
+      const startTime = new Date(questionnaire.startTime);
+      const endTime = new Date(questionnaire.endTime);
+
+      return now >= startTime && now <= endTime;
+    },
+    search(){
+      axios.post('http://localhost:8080/quiz/search',this.formattedData) 
+      .then(response => {
+        console.log('Received data:', response.data);
+        this.questionnaires = response.data.quizResList || [];
+        sessionStorage.setItem('dataQuestionnaires', JSON.stringify(this.questionnaires));
+      })
+      .catch(error => {
+        this.error = 'Error: ' + error.message;
+      });
+      console.log(this.formattedData.endDate)
+      this.formattedData= {
+        quizName:"",
+        startDate:"",
+        endDate: ""
+      }
+    },
     },
   //methods End
     components:{
-        CreateQButton,
+        // CreateQButton,
         Header,
         flatPickr,
-        list,
         scroll
   }
 }
@@ -162,18 +262,14 @@ export default{
     <div class="topContainer">
       <div class="searchAndTimeBox">
         <div class="search">
-          <input class="searchInput" type="text" placeholder="検索する．．．">
+          <input type="text" v-model="formattedData.quizName" class="searchInput"  placeholder="検索する．．．">
+          <input type="date" class="date" v-model="formattedData.startDate">
+          <input type="date" class="date" v-model="formattedData.endDate">
+          <!-- <button class="searchButton"@click="search()">搜尋</button> -->
+          <!-- <input v-model="" class="searchInput" type="text" placeholder="検索する．．．" > -->
         </div>
-        <div class="statTime">
-          <div class="timeBox">
-            <flat-pickr class="timePicker" v-model="selectedStartDate" :config="flatpickrOptions"></flat-pickr>
-          </div>
-          <span>&nbsp~&nbsp</span>
-          <div class="timeBox">
-            <flat-pickr  class="timePicker" v-model="selectedEndDate" :config="flatpickrOptions"></flat-pickr>
-          </div>
-        </div>
-        <button type="button"><i class="fa-solid fa-magnifying-glass"></i></button>
+        
+        <button type="button" @click="search()"><i class="fa-solid fa-magnifying-glass"></i></button>
       </div>
     </div>
     <div class="iconContainer">
@@ -183,7 +279,52 @@ export default{
       </div>
       
     </div>
-    <list />
+    <div class="tableContainer">
+    <div class="list">
+        <table >
+            <thead>
+                <tr>
+                <!-- <th class="checkBoxTop">&nbsp&nbsp&nbsp&nbsp</th> -->
+                <th >ID</th>
+                <th>Name</th>
+                <th class="status">Status</th>
+                <th class="startTimeBox">Start</th>
+                <th class="endTimeBox">End</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(questionnaire,index) in currentPageData" :key=questionnaire.id :class="{ 'disabled-button': !isClickable(questionnaire) }"> 
+                <!-- <td class="checkBox"><input type="checkbox"></td> -->
+                <td class="idBox">{{ (currentPage - 1) * tablePerPage + index + 1 }}</td>
+                <!-- <td class="name"><router-link :to="{ name: 'questionnaireContent', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire }}">{{ questionnaire.questionName }}</router-link></td> -->
+                <td class="name">
+                  <template v-if="isClickable(questionnaire)">
+                    <router-link :to="{ name: 'questionnaireContent', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire } }">
+                      {{ questionnaire.questionName }}
+                    </router-link>
+                  </template>
+                  <template v-else>
+                    <span class="disabled-link">
+                      {{ questionnaire.questionName }}
+                    </span>
+                  </template>
+                </td>
+                <td class="statusTd">{{ getStatus(questionnaire) }}</td>
+                <td class="tdStartTime">{{ questionnaire.startTime }}</td>
+                <td class="tdEndTime">{{ questionnaire.endTime }}</td>
+                <td class="tdEndTime"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="buttonDiv1">
+        <button v-for="(pageNumber,index) in totalPages" :key="pageNumber" @click="pushPage(pageNumber)" 
+        class="retro-button blue-button"
+        :class="getButtonClass(index)">
+            {{ pageNumber   }}
+        </button>
+    </div>
+</div>
 </div>
 </template>
 
@@ -316,6 +457,36 @@ export default{
   --color-overlay-dark: rgba(0,0,0,.2);
   --color-tab-focus: rgba(255,255,255,.15);
 }
+.buttonDiv1{
+        width: 100%;
+        position: absolute;
+        bottom:0%;
+        display: flex;
+        justify-content:center;
+        align-items: center;
+        // left: 50%;
+        .blue-button, .red-button, .yellow-button, .green-button{
+            width: 20px;
+            --color-bg:#0066B4;
+            --color-bg-light:#3981CA;
+            --color-bg-dark:#004EAD;
+            }
+        .red-button{
+            --color-bg:#E44E55;
+            --color-bg-light:#E47479;
+            --color-bg-dark:#D13239;
+        }
+        .green-button{
+            --color-bg:#00A07D;
+            --color-bg-light:#00AF8A;
+            --color-bg-dark:#008F70;
+        }
+        .yellow-button{
+            --color-bg:#FFC054;
+            --color-bg-light:#FFD996;
+            --color-bg-dark:#F2AA30;
+        }
+    }
 .greenButton{
     // color: white;
     --color-bg:#00A07D;
@@ -425,6 +596,7 @@ export default{
           width: 100%;
           height: 80%;
           font-size: 24px;
+          
           border: none;
           border-bottom: 4px solid var(--color-bg-dark);
           background-color: var(--color-page-bg);
@@ -433,6 +605,13 @@ export default{
           ::placeholder{
             color: #5D6C89;
           }
+        .date{
+          margin-left: 100px;
+        }
+        .searchButton{
+          display: block;
+
+        }
     }
       .statTime{
       // margin: auto;
@@ -464,7 +643,7 @@ export default{
     }
       button{
         display: block;
-        margin-left: -20px;
+        margin-left: 200px;
         width: 6%;
         height: 40%;
         font-size: 24px;
@@ -606,4 +785,123 @@ export default{
   left: 0;
 }
 
+
+
+
+.tableContainer{
+  height: 100vh;
+
+.list{
+    font-family: 'Press Start 2P', cursive;
+    width: 100%;
+    height: 80%;
+    margin:  auto;
+    position: relative;
+    table{  
+        margin: auto;
+        width: 90%;
+        // height: 20%;
+        th{
+            background-color:var(--color-bg);
+            color: white;
+            text-align: center;
+            height: 75px;
+            border-right: 2px solid rgb(248, 248, 248);
+            font-size: 24px;
+            // width: 20%;
+        }
+        .checkBoxTop{
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+        .status{
+            font-size: 24px;
+            padding: 20px;
+        }
+        .startTimeBox{
+            padding: 20px;
+            // border-right: none;
+            font-size: 24px;
+        }
+        .endTimeBox{
+            border-top-right-radius: 10px;
+            // border-bottom-right-radius: 10px;
+            padding: 20px;
+            border-right: none;
+            font-size: 24px;
+        }
+        td{
+            height:50px;
+            font-size: 24px;
+            text-align: center;
+            // color:var(--color-page-bg);
+            // border: 1px solid rgb(0, 0, 0);
+            border-bottom: 1px solid rgb(0, 0, 0);
+            background-color: var(--color-overlay-light);
+        }
+        .name{
+            width: 50%;
+        }
+        .checkBox{
+            width: 30px;
+            text-align: center;
+            border:none;
+        input{
+            width: 50%;
+            height: 40%;
+            background-color:rgb(18, 80, 92);
+        }
+        }
+        .idBox{
+        text-align: center;
+        width: 10%;
+        &:hover{
+            cursor: pointer;
+        }
+      }
+        .tdStartTime, .tdEndTime{
+          font-size: 12px;
+        }
+    }
+    .buttonDiv{
+        width: 100%;
+        // position: absolute;
+        bottom:-10%;
+        display: flex;
+        justify-content:center;
+        align-items: center;
+        // left: 50%;
+        .blue-button, .red-button, .yellow-button, .green-button{
+            width: 20px;
+            --color-bg:#0066B4;
+            --color-bg-light:#3981CA;
+            --color-bg-dark:#004EAD;
+            }
+        .red-button{
+            --color-bg:#E44E55;
+            --color-bg-light:#E47479;
+            --color-bg-dark:#D13239;
+        }
+        .green-button{
+            --color-bg:#00A07D;
+            --color-bg-light:#00AF8A;
+            --color-bg-dark:#008F70;
+        }
+        .yellow-button{
+            --color-bg:#FFC054;
+            --color-bg-light:#FFD996;
+            --color-bg-dark:#F2AA30;
+        }
+    }
+  }
+}
+
+.disabled-button {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.disabled-button:focus {
+  outline: none;
+}
 </style>

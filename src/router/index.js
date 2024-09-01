@@ -72,7 +72,32 @@ const router = createRouter({
       path:'/questionnaireContent/:id',
       name:'questionnaireContent',
       component:() => import('../views/questionnaireContent.vue'),
-    }
+    },
+    {
+      path:'/statistics/:id',
+      name:'statistics',
+      component:() => import('../views/statistics.vue'),
+    },
+    {
+      path:'/feedBack/:id',
+      name:'feedBack',
+      component:() => import('../views/feedBack.vue'),
+    },
+    {
+      path:'/EditPreview',
+      name:'EditPreview',
+      component:() => import('../views/EditPreview.vue'),
+    },
+    {
+      path:'/FeedbackLook/:email',
+      name:'FeedbackLook',
+      component:() => import('../views/FeedbackLook.vue'),
+    },
+    {
+      path:'/SubmitPreview/:id',
+      name:'SubmitPreview',
+      component:() => import('../views/SubmitPreview.vue'),
+    },
   ]
 })
 

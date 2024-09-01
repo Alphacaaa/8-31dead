@@ -31,25 +31,26 @@ export default {
                 startTime:'',
                 endTime:'',
                 question:'',
-                questionType:'單選題',
+                questionType:'single',
                 questionContent:'',
                 necessary:false,
                 options:[],
                 comfirmOptions:[],
                 filteredOptions:[],
             },
+            minDate:'',
             editQuestionnaire:[] || null,
             settingShow: true,
             selectedDate1: null,
             selectedDate2: null,
             flatpickrOptions: {
                 dateFormat: 'Y-m-d', 
-                minDate:'today',
-                defaultDate:this.calculateMinDateStart()
+                // minDate:'today',
+                // defaultDate:this.calculateMinDateStart()
             },
             flatpickrOptions2: {
                 dateFormat: 'Y-m-d', 
-                defaultDate:this.calculateMinDateEnd()
+                // defaultDate:this.calculateMinDateEnd()
             }
         }
     },
@@ -85,20 +86,21 @@ export default {
 
     },
     mounted(){
-        this.flatpickrOptions.minDate = this.calculateMinDateStart()
+        // this.flatpickrOptions.minDate = this.calculateMinDateStart()
+        this.setMinDate();
     },
     methods:{
-        calculateMinDateStart() {
-            const now = new Date()
-            now.setDate(now.getDate() + 2)
-            return now.toISOString().split('T')[0]
-            },
-        calculateMinDateEnd() {
-            const now = new Date()
+        // calculateMinDateStart() {
+        //     const now = new Date()
+        //     now.setDate(now.getDate() + 2)
+        //     return now.toISOString().split('T')[0]
+        //     },
+        // calculateMinDateEnd() {
+        //     const now = new Date()
             
-            now.setDate(now.getDate() + 7)
-            return now.toISOString().split('T')[0]
-            },
+        //     now.setDate(now.getDate() + 7)
+        //     return now.toISOString().split('T')[0]
+        //     },
         goNextAndSave(){
             if (this.questionnaire.questionName == "") {
                 alert("請填寫問卷主題")
@@ -109,6 +111,30 @@ export default {
                 sessionStorage.setItem('questionnaire',JSON.stringify(this.questionnaire));
                 this.$router.push('/SetContent')
                 console.log("sessionStorage saved");
+            }
+        },
+        setMinDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // 月份從0開始，因此加1
+            let dd = today.getDate();
+
+            // 格式化月份和日期為兩位數
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+
+            // 組合成 YYYY-MM-DD 格式
+            this.minDate = `${yyyy}-${mm}-${dd}`;
+            },
+        updateMinEndDate() {
+            // 當開始日期改變時，更新結束日期的最小值
+            // 如果結束日期早於開始日期，則自動設置為開始日期
+            if (this.endDate && this.endDate < this.startDate) {
+                this.endDate = this.startDate;
             }
         },
         clearSessionData(){
@@ -150,11 +176,13 @@ export default {
             </div>
             <div class="timeBox">
                 <label for=""><b>開始時間:</b></label>
-                <flat-pickr class="timePicker" v-model="questionnaire.startTime" :config="flatpickrOptions"></flat-pickr>
+                <!-- <flat-pickr class="timePicker" v-model="questionnaire.startTime" :config="flatpickrOptions"></flat-pickr> -->
+                <input type="date" v-model="questionnaire.startTime" :min="minDate" @change="updateMinEndDate">
             </div>
             <div class="timeBox">
                 <label for=""><b>結束時間:</b></label>
-                <flat-pickr  class="timePicker" v-model="questionnaire.endTime" :config="flatpickrOptions2"></flat-pickr>
+                <!-- <flat-pickr  class="timePicker" v-model="questionnaire.endTime" :config="flatpickrOptions2"></flat-pickr> -->
+                <input type="date" v-model="questionnaire.endTime" :min="questionnaire.startTime">
             </div>
 <!-- 
             <a href="javascript: void(0)" class="createQsetBtn" @click="goNextAndSave()">

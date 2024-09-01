@@ -6,12 +6,14 @@ import ManageList from '../components/ManageList.vue'
 import flatPickr from 'vue-flatpickr-component';
 import 'flatpickr/dist/flatpickr.css';
 import axios from 'axios';
+import unpublish from '/public/trash.png'
+// const uuuu = require('@/assets/available.png')
 export default{
   data() {
     return {
       questionnaires: [],
 
-      formattedData: {
+      formattedData: {  
         quizName:"",
         startDate:"",
         endDate: ""
@@ -26,6 +28,7 @@ export default{
       tablePerPage:10,
       colors : ['red', 'green', 'blue', 'yellow'],
       buttonColors: [],
+      quizIdList: [],
     }
   },
   mounted(){
@@ -44,7 +47,9 @@ export default{
 
   },
   created() {
+    
     this.initButtonColors();
+    
     axios.post('http://localhost:8080/quiz/search',this.formattedData) 
       .then(response => {
         console.log('Received data:', response.data);
@@ -55,7 +60,7 @@ export default{
         this.error = 'Error: ' + error.message;
       });
   },
-  
+
   computed:{
         currentPageData(){
         const start =(this.currentPage - 1) * this.tablePerPage
@@ -74,23 +79,62 @@ export default{
     create(){
       this.$router.push('/QuestionaireSet')
     },
+    getStatus(questionnaire) {
+      const now = new Date();
+      const startDate = new Date(questionnaire.startTime);
+      const endDate = new Date(questionnaire.endTime);
+      if (now > endDate) {
+        return '已結束';
+      }
+      if (!questionnaire.published) {
+        return '未發布'
+      }
+
+        if (now < startDate) {
+          return '未開始'
+        } else if (now >= startDate && now <= endDate) {
+          return '進行中'
+        
+        } else {
+          return 
+        }
+      },
+    showPublishIcon(questionnaire) {
+
+        const now = new Date();
+        const startDate = new Date(questionnaire.startTime);
+        const endDate = new Date(questionnaire.endTime);
+
+        if (now < startDate) {
+          return true
+        } else if (now >= startDate && now <= endDate) {
+          return true
+        } else if (now > endDate) {
+            return false;
+        } else {
+          return false
+        }
+    },
+
     pushPage(pageNumber){
         this.currentPage = pageNumber
         },
     getRandomColor() {
         const randomIndex = Math.floor(Math.random() * this.colors.length);
         console.log(this.colors[randomIndex])
+        console.log('Generated color:', color);
         return this.colors[randomIndex]
     },
     getButtonClass(index) {
         const color = this.buttonColors[index];
         console.log(`retro-button ${this.buttonColors[index]}-button`)
-        return `retro-button ${this.buttonColors[index]}-button`
+        return `retro-button ${color}-button`
     },
     initButtonColors() {
         if (this.totalPages > 0) {
             this.buttonColors = Array.from({ length: this.totalPages }, () => this.getRandomColor());
         }
+        console.log('Initialized button colors:', this.buttonColors);
     },
     goContent(){
       this.$router.push('/questionnaireContent')
@@ -106,12 +150,110 @@ export default{
         this.error = 'Error: ' + error.message;
       });
       console.log(this.formattedData.endDate)
+      this.formattedData= {  
+        quizName:"",
+        startDate:"",
+        endDate: "",
+      }
     },
     edit(){
       this.$router.push('/QuestionaireSet')
-    }
-    
+    },
+    updatequizIdList(id, event) {
+      if (event.target.checked) {
+
+        this.quizIdList.push(id);
+      } else {
+  
+        const index = this.quizIdList.indexOf(id);
+        if (index > -1) {
+          this.quizIdList.splice(index, 1);
+        }
+      }
+    },
+    togglePublish(id) {
+    const questionnaire = this.questionnaires.find(q => q.id === id);
+    console.log(questionnaire)
+      if (questionnaire) {
+        // Toggle the published status
+        questionnaire.published = !questionnaire.published;
+
+        // Update the status on the server
+        axios.post('http://localhost:8080/quiz/update',questionnaire )
+        .then(response => {
+          console.log('Status updated successfully:', response.data);
+        })
+        .catch(error => {
+          console.error('Error updating status:', error);
+          this.saveMessage = 'failed'; 
+          this.showSaveMessage = true; 
+          setTimeout(() => this.showSaveMessage = false, 3000); 
+          if (error.response) {
+          console.error('Error response data:', error.response.data);
+          console.error('Error response status:', error.response.status);
+          console.error('Error response headers:', error.response.headers);
+          alert(error.response.data.message)
+          }
+        });
+      }
+      },
+      updatequizIdList(id, event) {
+        if (event.target.checked) {
+          this.quizIdList.push(id);
+          console.log(this.quizIdList)
+        } else {
+          const index = this.quizIdList.indexOf(id);
+          if (index > -1) {
+            this.quizIdList.splice(index, 1);
+          }
+          console.log(this.quizIdList)
+        }
+        
   },
+    deleteSelected(){
+      console.log(this.quizIdList)
+      if (this.quizIdList.length === 0) {
+      alert('選擇要刪除的問卷');
+      return;
+    }
+    axios.post('http://localhost:8080/quiz/delete',{
+      quizIdList :this.quizIdList
+    })
+        .then(response => {
+          if(response.data.code !== 200){
+            alert(response.data.messgage)
+          }else{
+            this.currentPageData = this.currentPageData.filter(questionnaire => !this.quizIdList.includes(questionnaire.id));
+            this.quizIdList = [];
+            console.log("清空"+this.quizIdList)
+            console.log('delete success:', response.data);
+          }
+        })
+        .catch(error => {
+          console.error('Error updating status:', error);
+          this.saveMessage = 'fail to delete'; 
+          this.showSaveMessage = true; 
+          if (error.response) {
+          console.error('Error response data:', error.response.data);
+          console.error('Error response status:', error.response.status);
+          console.error('Error response headers:', error.response.headers);
+          }
+          
+        })
+        window.location.reload();
+    },
+    statusCheck(event,questionnaire){
+      event.preventDefault();
+      if(this.getStatus(questionnaire) == '進行中' || this.getStatus(questionnaire) == '已結束'){
+        alert('進行中或已結束的問卷無法編輯')
+        this.$router.push('/CreateQmanage');
+      }   
+        // return
+      }
+    },
+    
+    
+  
   components:{
       CreateQButton,
       Header,
@@ -120,6 +262,7 @@ export default{
       ManageList
   }
 }
+
 </script>
 
 <template>
@@ -130,7 +273,7 @@ export default{
     <!-- <breadCrum /> -->
     <div class="sideBox">
       <div class="sideButtonBox">
-        <button class="retro-button yellowButton" @click="create()"><img src="/public/hammer.png" width="50px" height="50px"></button>
+        <button class="retro-button yellowButton1" @click="create()"><img src="/public/hammer.png" width="50px" height="50px"></button>
       </div>
       
     </div>
@@ -142,13 +285,18 @@ export default{
         <button @click="search()">搜尋</button>
       </div>
       <div class="iconContainer">
-        <span><b>我的問卷</b></span>
+        <span><b>My questionnaire</b></span>
           <div class="icon">
-            <i class="fa-solid fa-trash-can"></i>
+            <button @click="deleteSelected"> <img src="/public/trash.png" width="36px" alt=""></button>
+          
           <!-- <RouterLink to="/QuestionaireSet"><i class="fa-solid fa-plus"></i></RouterLink> -->
           </div>
         
       </div>
+      <div>
+      <!-- <p>選中的問卷 ID:</p> -->
+     
+    </div>
       <div class="tableContainer">
         <div class="list">
             <table >
@@ -159,22 +307,30 @@ export default{
                     <th>Name</th>
                     <th class="status">Status</th>
                     <th class="startTimeBox">Start</th>
-                    <th class="endTimeBox">End</th>
-                    <th class="endTimeBox">Edit</th>
+                    <th class="endTimeBox2">End</th>
+                    <th class="endEdit">Edit</th>
+                    <th class="stat">&nbsp&nbsp&nbsp</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(questionnaire,index) in currentPageData" :key=questionnaire.id>
-                    <td class="checkBox"><input type="checkbox"></td>
+                <tr v-for="(questionnaire,index) in currentPageData" :key=questionnaire.id >
+                    <td  :disabled="getStatus(questionnaire) === '進行中'" class="checkBox"><input :disabled="getStatus(questionnaire) === '進行中'" type="checkbox" :value="questionnaire.id" @change="updatequizIdList(questionnaire.id, $event)"></td>
                     <!-- <td class="idBox">{{ index + 1 }}</td> -->
                     <td class="idBox">{{ (currentPage - 1) * tablePerPage + index + 1 }}</td>
                     <!-- <td class="name"><p @click="goContent()">{{ questionnaire.questionName }}</p></td> -->
-                    <td class="name"><router-link :to="{ name: 'questionnaireContent', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire }}">{{ questionnaire.questionName }}</router-link></td>
-                    <td class="statusTd">{{ questionnaire.status }}</td>
+                    <td class="name">{{ questionnaire.questionName }}</td>
+                    <!-- <td class="name"><router-link :to="{ name: 'statistics', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire }}">{{ questionnaire.questionName }}</router-link></td> -->
+                    <!-- <td class="statusTd"> <img :src="getStatus(questionnaire)" alt="status image"></td> -->
+                    <td class="statusTd" @click="searchStatus()"> {{getStatus(questionnaire)}}</td>
                     <td class="tdStartTime">{{ questionnaire.startTime }}</td>
                     <td class="tdEndTime">{{ questionnaire.endTime }}</td>
-                    <td  class="tdEndTime"><router-link :to="{ name: 'QuestionaireEdit', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire }}">編輯</router-link></td>
-                </tr>
+                    <td  class="tdEdit"><router-link @click.native="statusCheck($event,questionnaire)" :to="{ name: 'QuestionaireEdit', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire }}"><img src="/public/note.png" width="24px"></router-link></td>
+                    <!-- <td  class="tdEdit"><router-link @click.native="statusCheck($event,questionnaire)" :to="{ name: 'QuestionaireEdit', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire }}"><img src="/public/note.png" width="24px"></router-link></td> -->
+                    <td class="feed"><router-link :to="{ name: 'feedBack', params: { id: questionnaire.id }, state: { questionnaireData: questionnaire }}"><img src="/public/pie-chart.png" alt="" width="24"></router-link></td>
+                    <button class="publishButton" v-if="showPublishIcon(questionnaire)" @click="togglePublish(questionnaire.id)">
+                      <img  :src="questionnaire.published ? '/images/smile.png' :'/images/unpublish.png'" alt="status icon" width="40"> 
+                    </button>
+                  </tr>
                 </tbody>
             </table>
         </div>
@@ -304,14 +460,18 @@ export default{
     align-items: center;
     justify-content: space-between;
     span{
-      font-size: 40px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 24px;
       color: #333030 ;
       
     }
-    .fa-plus, .fa-trash-can{
-      font-size: 40px;
-      margin: 20px;
-      color: #333030 ;
+    .icon{
+      width: 5%;
+      button{
+        border: none;
+        background-color: #e3dede;
+      }
+      // margin-left: -100px;
     }
   }
 }
@@ -329,14 +489,16 @@ export default{
 
       margin-top:600px;
       display: flex;
+      // height: 200px;
       justify-content: center;
     }
   }
-  .yellowButton{
-
+  .yellowButton1{
+    // padding:;
     --color-bg:#FFC054;
     --color-bg-light:#FFD996;
     --color-bg-dark:#F2AA30;
+    width: 500px;
   }
 
     .retro-button{
@@ -350,7 +512,7 @@ export default{
     min-width:100px;
     // width: 50px;
     width: 100px;
-    height: 100px;
+    height: 300px;
     border-radius:calc( var(--button-height) / 2);
     border:0;
     font-weight:800;
@@ -410,7 +572,7 @@ export default{
 //////////////////////
 
 :root{
-    --button-height: 3rem;
+    --button-height: 5rem;
     --color-text: rgba(0, 0, 0, 0.25);
     --color-text-shadow: rgb(29, 28, 28);
     --color-page-bg:#B9B5AA;
@@ -430,7 +592,7 @@ export default{
     .buttonDiv{
         width: 100%;
         position: absolute;
-        bottom:-25%;
+        bottom:-20%;
         display: flex;
         justify-content:center;
         align-items: center;
@@ -494,12 +656,24 @@ export default{
             // border-right: none;
             font-size: 24px;
         }
-        .endTimeBox{
-            border-top-right-radius: 10px;
+        .endTimeBox2{
+            // border-top-right-radius: 20px;
             // border-bottom-right-radius: 10px;
             padding: 20px;
-            border-right: none;
+            // border-right: none;
             font-size: 24px;
+        }
+        .endEdit{
+          padding: 20px;
+          // border-top-right-radius: 10px;
+          // border-bottom-right-radius: 10px;
+          font-size: 24px;
+        }
+        .stat{
+          padding: 20px;
+          border-top-right-radius: 10px;
+          border-bottom-right-radius: 10px;
+          font-size: 24px;
         }
         td{
             height:50px;
@@ -534,9 +708,13 @@ export default{
         }
     }
         .tdEndTime, .tdStartTime{
-          font-size: 12px;
+          font-size: 11px;
           // width: 50px;
         }
+    }
+    .publishButton{
+      border: none;
+      background-color: #e3dede;
     }
 }
 .retro-button{
@@ -600,4 +778,18 @@ export default{
         inset .5rem .5rem .75rem var(--color-bg-dark), 
         inset .5rem .5rem .5rem var(--color-bg-light), 
 }
+
+.statusTd{
+  img {
+    width: 24px; 
+    height: auto; 
+}
+}
+
+img{
+  &:hover{
+    scale:1.2;
+  }
+}
+
 </style>
